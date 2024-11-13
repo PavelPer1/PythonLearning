@@ -1,0 +1,43 @@
+{% load static %}
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8">
+    <title>Название страницы</title>
+    <meta name="description" content="Описание страницы" />
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,300italic,400italic,600' rel='stylesheet' type='text/css'>
+      <link href="//netdna.bootstrapcdn.com/font-awesome/3.1.1/css/font-awesome.css" rel="stylesheet">
+        <link rel="stylesheet" href="{% static 'profile/css_register.css'%}">
+  </head>
+  <body>
+
+  <form method="post">
+    {% csrf_token %}
+    <div class="login">
+      <div class="login__card card">
+        <div class="card__title">Регистрация</div>
+        <div class="card__form form">
+          <input class="form__input" type="text" name="username" placeholder="Введите логин" />
+          <input
+            class="form__input"
+            type="password"
+            name="password1"
+            placeholder="Введите пароль"
+          />
+          <input
+            class="form__input"
+            type="password"
+            name="password2"
+            placeholder="Повторите пароль"
+          />
+        </div>
+        <div class="card__footer footer">
+          <button class="footer__login">Зарегистрироваться</button>
+          <div class="footer__text text">
+            <span class="text__question">Уже есть аккаунт?</span>
+            <a class="text__link" href="{% url 'login' %}">Войти</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
