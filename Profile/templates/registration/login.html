@@ -1,0 +1,39 @@
+{% load static %}
+<html lang="ru" xmlns="http://www.w3.org/1999/html">
+  <head>
+    <meta charset="UTF-8">
+    <title>Название страницы</title>
+    <meta name="description" content="Описание страницы" />
+
+    <link rel="stylesheet" type="text/css" href="{% static 'profile/css_1.css' %}">
+  </head>
+  <body>
+  <form class="form-2" method="post">
+           {% csrf_token %}
+  <div class="login">
+      <div class="login">
+      <div class="login__card card">
+        <div class="card__title">Вход</div>
+        <div class="card__form form">
+          <input class="form__input" name="username" placeholder="Введите логин" />
+          <input
+            class="form__input"
+            type="password"
+            name="password"
+            placeholder="Введите пароль"
+          />
+        </div>
+        <div class="card__footer footer">
+          <button class="footer__login">Войти</button>
+          <div class="footer__text text">
+            <span class="text__question">Нет аккаунта?</span>
+            <a class="text__link" href="{% url 'register' %}">Зарегистрироваться</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    </div>
+    </form>
+  </body>
+</html>
