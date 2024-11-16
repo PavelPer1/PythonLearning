@@ -12,7 +12,7 @@ from Profile.forms import RegisterForm, CreateUserForm
 
 @login_required
 def login_view(request):
-    return render(request, 'profile_title/profile.html')
+    return redirect('main_title')
 
 
 class RegisterUser(CreateView):

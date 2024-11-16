@@ -1,0 +1,71 @@
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>CREAMPY</title>
+    <link rel="stylesheet" href="{% static 'main/main.css' %}">
+</head>
+<body>
+    <div class="fon">
+        <header class="container">
+            <h1>CREAMPY</h1>
+            <div class="btns">
+                <button href="#" class="sign">Войти</button>
+                <button href='#' class="reg">Регистрация</button>
+            </div>
+        </header>
+
+        <div class="info container">
+            <h2>Python для начинающих</h2>
+            <p>обучение с нуля до n уровня<br>
+                онлайн-тренажер и общение с преподавателями<br>
+                n часов обущающих материалов<br>
+                новый и почти уникальный проект. присоединяйтесь!</p>    
+        </div>
+    </div>
+
+    <div class="fon2">
+        <div class="hero container">    
+            <h3>интересные задания и<br>
+                подробное обучение </h3>
+            <p>в мире программирования есть место творчеству.<br>
+                ваше воображение главный ключ к решению задач</p>
+            <img src="{% static 'images/Vector 3.png' %}" class="vector">
+            <img src="{% static 'images/python.jpg' %}" class="img">
+        </div>
+    </div>
+    
+    <div class="fon">
+        <div class="hero-info container">
+            <h3>все самое важное</h3>
+            <div class="boxes">
+                <div class="box">
+                    <img src="{% static 'images/Monitor.png' %}" alt="">
+                    <p>интересные<br>практические<br>задания</p>
+                </div>
+                <div class="box">
+                    <img src="{% static 'images/Last 24 Hours.png' %}" alt="">
+                    <p>обучение в любое<br>время в любом<br>месте</p>
+                </div>
+                <div class="box">
+                    <img src="{% static 'images/Tuition.png' %}" alt="">
+                    <p>вся необходимая<br>подробная теория</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="fon2">
+        <div class="dop-info">
+            <h4>информация</h4>
+            <div class="items">
+                <img src="{% static 'images/VK com.png' %}" alt="">
+                <img src="{% static 'images/Telegram App.png' %}" alt="">
+                <img src="{% static 'images/YouTube.png' %}" alt="">
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
