@@ -6,6 +6,7 @@ from django.contrib.auth.views import LoginView
 from django.views.generic import CreateView
 from django.shortcuts import render, redirect
 
+from .models import Teacher, Student
 from .settings import *
 from Profile.forms import RegisterForm, CreateUserForm
 
@@ -26,6 +27,13 @@ class RegisterUser(CreateView):
 
     def form_valid(self, form):
         user = form.save()
+
+        if self.request.POST.get('pointer') == 'Teacher':
+            a = Teacher(name=user)
+            a.save()
+        else:
+            a = Student(name=user)
+            a.save()
         login(self.request, user)
         return redirect('profile')
 
