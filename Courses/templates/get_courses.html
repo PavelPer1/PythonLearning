@@ -2,48 +2,50 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Курс!!!</title>
-    href="https://codemirror.net/lib/codemirror.css">
-<script src="https://codemirror.net/lib/codemirror.js"></script>
-<script src="https://codemirror.net/mode/python/python.js"></script>
-<style>
-  .CodeMirror {
-    border: 1px solid #eee;
-    height: 300px;
-  }
-</style>
+    <title>Курс: {{ courses.name }}</title>
+    <link rel="stylesheet" href="https://codemirror.net/lib/codemirror.css">
+    <script src="https://codemirror.net/lib/codemirror.js"></script>
+    <script src="https://codemirror.net/mode/python/python.js"></script>
+    <style>
+        .CodeMirror {
+            border: 1px solid #eee;
+            height: 300px;
+            font-family: "Courier New", monospace;
+        }
+        #output {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            background-color: #f9f9f9;
+        }
+    </style>
 </head>
 <body>
-    <h1>{{courses.teacher}}</h1>
-<h1>{{courses.name}}</h1>
-<h1>{{courses.progress}}</h1>
-<h1>{{courses.author}}</h1>
-<h1>Python Online Compiler</h1>
+    <h1>Курс: {{ courses.name }}</h1>
+    <p><strong>Преподаватель:</strong> {{ courses.teacher }}</p>
+    <p><strong>Прогресс:</strong> {{ courses.progress }}%</p>
+    <p><strong>Описание задания:</strong> {{ courses.description }}</p>
 
-<textarea id="code"></textarea>
-<button id="run">Run</button>
-<div id="output"></div>
+    <h3>Python Online Compiler</h3>
 
-<script>
-  var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
-    mode: "python",
-    lineNumbers: true
-  });
+    <form method="POST" action="{% url 'course_with_compiler' courses.name %}">
+        {% csrf_token %}
+        <textarea id="code" name="codearea"></textarea>
+        <button type="submit">Run</button>
+    </form>
 
-  document.getElementById('run').addEventListener('click', function() {
-    const code = editor.getValue();
-    fetch('/compile/', { // Запрос к Django backend
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ code: code })
-    })
-    .then(response => response.json())
-    .then(data => {
-      document.getElementById('output').innerText = data.result || data.error;
-    });
-  });
-</script>
+    <div id="output">
+        {% if output %}
+            <pre>{{ output }}</pre>
+        {% endif %}
+    </div>
+
+    <script>
+        var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
+            lineNumbers: true,
+            mode: "python",
+            theme: "default",
+        });
+    </script>
 </body>
 </html>

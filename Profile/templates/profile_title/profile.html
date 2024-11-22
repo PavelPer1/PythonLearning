@@ -2,10 +2,15 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Профиль</title>
 </head>
 <body>
-{% csrf_token %}
-<h1>Вы успешено зарегестрировались!!!!</h1>
+    <h1>Привет, {{ user.username }}!</h1>
+    <p>Добро пожаловать в ваш профиль.</p>
+    
+    <form method="POST" action="{% url 'logout' %}">
+        {% csrf_token %}
+        <button class="logout-button" type="submit">Выйти</button>
+    </form>
 </body>
 </html>
