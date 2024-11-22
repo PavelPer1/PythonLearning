@@ -2,7 +2,6 @@ from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.views import LoginView
-
 from django.views.generic import CreateView
 from django.shortcuts import render, redirect
 
@@ -13,8 +12,12 @@ from Profile.forms import RegisterForm, CreateUserForm
 
 @login_required
 def login_view(request):
-    return redirect('main_title')
+    user = request.user  # Получаем текущего пользователя
+    return render(request, 'profile_title/profile.html', {'user': user})
 
+def logout_view(request):
+    logout(request)
+    return redirect('register')
 
 class RegisterUser(CreateView):
     form_class = RegisterForm
