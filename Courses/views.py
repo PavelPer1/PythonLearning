@@ -1,65 +1,78 @@
-from django.shortcuts import render
-
+from django.shortcuts import render, get_object_or_404
 from Courses.models import StudentCourser, Courses
+from django.http import HttpResponse
 
-import docker
-import json
-from django.http import JsonResponse
-from django.views.decorators.http import require_POST
-import os
+import traceback
+from io import StringIO
+from contextlib import redirect_stdout
 
+def execute_code_safely(code):
+    try:
+        # Настроим безопасный контекст для exec
+        local_globals = {
+            '__builtins__': {
+                'print': print,  # Ограничим доступ только к безопасному print
+                'len': len,
+                'range': range,
+                'sum': sum,
+                'min': min,
+                'max': max,
+                'abs': abs,
+                'str': str,
+                'int': int,
+                'float': float,
+                'dict': dict,
+                'list': list,
+                'tuple': tuple,
+            },
+            '__name__': '__main__',  # Указываем, что это главный модуль
+        }
 
+        # Буфер для захвата вывода
+        output_buffer = StringIO()
 
+        # Перенаправляем stdout в буфер
+        with redirect_stdout(output_buffer):
+            # Выполнение кода в безопасной среде
+            exec(code, local_globals)
 
+        # Получаем вывод из буфера
+        output = output_buffer.getvalue()
 
-def render_courses(request):
-    my_courses = []
-    for i in StudentCourser.objects.all():
-        if request.user.id == i.student.name.id:
-            my_courses += [i.courses.name]
+        # Если код не выводит ничего, то пытаемся вернуть последний результат выражения
+        if not output:
+            # Попробуем вернуть результат последнего выражения
+            last_result = local_globals.get('_', None)
+            if last_result is not None:
+                output = str(last_result)
+
+        return output if output else "Program executed without output."
+    except Exception as e:
+        # Возвращаем подробное сообщение об ошибке
+        return f"Error: {str(e)}\n{traceback.format_exc()}"
+
+# Вьюха для отображения текста задания и выполнения кода
+def course_with_compiler(request, crs):
+    # Получение курса
+    course = get_object_or_404(Courses, name=crs)
+
+    if request.method == "POST":
+        # Если POST-запрос, выполняем код из компилятора
+        code = request.POST.get('codearea', '')
+
+        # Ограничение длины кода
+        if len(code) > 1000:  # Пример ограничения
+            return HttpResponse("Code is too long", status=400)
+
+        output = execute_code_safely(code)
+    else:
+        # Если GET-запрос, ничего не выполняем, только отображаем задание
+        output = None
+
+    # Контекст для отображения курса и результата выполнения кода
     context = {
-        'my_courses': my_courses
-    }
-    return render(request, 'user_courses.html', context=context)
-
-def get_courses(request, crs):
-    courses = Courses.objects.get(name=crs)
-
-    context = {
-        'courses': courses
+        'courses': course,
+        'output': output,
     }
 
-    return render(request, 'get_courses.html', context=context)
-
-@require_POST
-def compile(request):
-  try:
-    data = json.loads(request.body)
-    code = data['code']
-
-    # Настройка Docker-контейнера
-    client = docker.from_env()
-    container = client.containers.run(
-      image='python:3.9', # Или другая подходящая версия Python
-      command=['python', '-c', code],
-      detach=True,
-      auto_remove=True,
-      mem_limit='128m', # Ограничение памяти
-      cpu_shares=1024 #Ограничение CPU
-    )
-
-    #Получение результатов (это упрощенная реализация - нужно будет настроить)
-    logs = container.logs(stream=True)
-    output = ""
-    for log in logs:
-      output += log.decode()
-
-    return JsonResponse({'result': output})
-
-  except docker.errors.ContainerError as e:
-    return JsonResponse({'error': f'Container error: {e}'})
-  except docker.errors.ImageNotFound as e:
-    return JsonResponse({'error': f'Image not found: {e}'})
-  except Exception as e:
-    return JsonResponse({'error': f'Error: {str(e)}'})
-
+    return render(request, 'get_courses.html', context)
