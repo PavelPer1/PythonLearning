@@ -18,4 +18,4 @@ class CreateUserForm(ModelForm):
 
     class Meta:
         model = Profile
-        fields = ('email', 'number', 'fio')
+        fields = ('email', 'number', 'fio', 'pointer')

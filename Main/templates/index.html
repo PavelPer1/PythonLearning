@@ -12,8 +12,13 @@
         <header class="container">
             <h1>CREAMPY</h1>
             <div class="btns">
-                <button href="#" class="sign">Войти</button>
-                <button href='#' class="reg">Регистрация</button>
+                {% if not request.user.is_authenticated %}
+                <a href="{% url 'profile' %}"><button  class="sign">Войти</button></a>
+                <a href="{% url 'register' %}"><button class="reg">Регистрация</button></a>
+                {% else %}
+                <a href="{% url 'profile' %}"><button  class="sign">{{user.username}}</button></a>
+                <a href="{% url 'user_courses' %}"><button  class="sign">Мои курсы</button></a>
+                {% endif %}
             </div>
         </header>
 
