@@ -6,6 +6,9 @@
 </head>
 <body>
 {% csrf_token %}
-<h1>{{my_courses}}</h1>
+<h1>Мои курсы</h1>
+{% for i in my_courses %}
+<a href="../courses/{{i}}"><button  class="sign">{{i}}</button></a>
+{% endfor %}
 </body>
 </html>
