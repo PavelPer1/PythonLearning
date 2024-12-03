@@ -5,12 +5,13 @@
     <title>Профиль</title>
 </head>
 <body>
-    <h1>Привет, {{ user.username }}!</h1>
+    <h1>Привет, {{user.username}}!</h1>
     <p>Добро пожаловать в ваш профиль.</p>
     
     <form method="POST" action="{% url 'logout' %}">
         {% csrf_token %}
-        <button class="logout-button" type="submit">Выйти</button>
+        <button class="logout-button" type="submit"  onclick="location.href='{% url 'logout' %}?next=/profile'">Выйти</button>
     </form>
+    <a href="{% url 'user_courses' %}"><button>Мои Курсы</button></a>
 </body>
 </html>

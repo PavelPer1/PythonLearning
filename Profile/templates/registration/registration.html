@@ -1,0 +1,45 @@
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Регистрация</title>
+    <link rel="stylesheet" href="{% static 'registration/main.css'%}">
+</head>
+<body>
+<form method="post">
+    {% csrf_token %}
+    <div class="signBox"  >
+        <div class="hero">
+            <div class="box">
+                <h1>Регистрация</h1>
+                <p>Придумайте логин</p>
+                <input type="text" name="username">
+                <p>Электронная почта</p>
+                <input type="email" name="email">
+                <p>Пароль</p>
+                <input type="password"  name="password1">
+                <p>Повторите пароль</p>
+                <input type="password" name="password2"/>
+            </div>
+            <div class="box">
+                <div class="radio-container">
+                    <div class="center-radio">
+                        <h1 style="text-align: center;">Ученик</h1>
+                        <input type="radio" id="one" name="pointer" value="Ученик"/>
+                    </div>
+                    <div class="center-radio">
+                        <h1 style="text-align: center;">Учитель</h1>
+                        <input type="radio" id="two" name="pointer" value="Учитель"/>
+                    </div>
+                </div>
+                <button>Зарегестрироваться</button>
+            </div>
+        </div>
+    </div>
+</form>
+    <script>
+        document.body.style.backgroundColor = "#00B358"; // Замените на нужный вам цвет
+    </script>
+</body>
+</html>

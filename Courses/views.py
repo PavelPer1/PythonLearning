@@ -76,3 +76,15 @@ def course_with_compiler(request, crs):
     }
 
     return render(request, 'get_courses.html', context)
+
+def user_courses(request):
+    crs = []
+    for i in StudentCourser.objects.all():
+        if i.student.name.id == request.user.id:
+            crs += [i]
+
+    context = {
+        'courses': crs
+    }
+
+    return render(request, 'user_courses.html', context=context)

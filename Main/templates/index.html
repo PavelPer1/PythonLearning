@@ -17,7 +17,6 @@
                 <a href="{% url 'register' %}"><button class="reg">Регистрация</button></a>
                 {% else %}
                 <a href="{% url 'profile' %}"><button  class="sign">{{user.username}}</button></a>
-                <a href="{% url 'user_courses' %}"><button  class="sign">Мои курсы</button></a>
                 {% endif %}
             </div>
         </header>

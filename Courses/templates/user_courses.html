@@ -7,7 +7,7 @@
 <body>
 {% csrf_token %}
 <h1>Мои курсы</h1>
-{% for i in my_courses %}
+{% for i in courses %}
 <a href="../courses/{{i}}"><button  class="sign">{{i}}</button></a>
 {% endfor %}
 </body>

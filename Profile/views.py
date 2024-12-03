@@ -1,4 +1,4 @@
-from django.contrib.auth import login
+from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.views import LoginView
@@ -21,7 +21,7 @@ def logout_view(request):
 
 class RegisterUser(CreateView):
     form_class = RegisterForm
-    template_name = 'registration/register.html'
+    template_name = 'registration/registration.html'
     success_url = reverse_lazy('login')
 
     def get_context_data(self, *, object_list=None, **kwargs):
@@ -31,7 +31,7 @@ class RegisterUser(CreateView):
     def form_valid(self, form):
         user = form.save()
 
-        if self.request.POST.get('pointer') == 'Teacher':
+        if self.request.POST.get('pointer') == 'Учитель':
             a = Teacher(name=user)
             a.save()
         else:
@@ -39,12 +39,3 @@ class RegisterUser(CreateView):
             a.save()
         login(self.request, user)
         return redirect('profile')
-
-
-class LoginUser(LoginView):
-    form_class = AuthenticationForm
-    template_name = 'registration/login.html'
-
-    def get_context_data(self, *, object_list=None, **kwargs):
-        context = super().get_context_data(**kwargs)
-        return dict(list(context.items()))
