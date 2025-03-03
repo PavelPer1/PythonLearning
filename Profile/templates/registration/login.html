@@ -1,39 +1,101 @@
 {% load static %}
-<html lang="ru" xmlns="http://www.w3.org/1999/html">
+<html lang="ru">
   <head>
     <meta charset="UTF-8">
-    <title>Название страницы</title>
-    <meta name="description" content="Описание страницы" />
-
-    <link rel="stylesheet" type="text/css" href="{% static 'registration/login.css' %}">
+    <title>Вход</title>
+    <meta name="description" content="Страница входа на платформу" />
+    <style>
+        /* Основные стили */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #ffffff;
+            margin: 0;
+            padding: 0;
+        }
+        .login {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f8f9fa;
+        }
+        .login__card {
+            background-color: #ffffff;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            padding: 30px;
+            width: 100%;
+            max-width: 450px;
+            text-align: center;
+        }
+        .card__title {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .form__input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+            box-sizing: border-box;
+        }
+        .form__input:focus {
+            outline: none;
+            border-color: #007bff;
+        }
+        .footer__login {
+            width: 100%;
+            padding: 12px;
+            background-color: #007bff; /* Синий цвет кнопки */
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .footer__login:hover {
+            background-color: #0056b3; /* Темнее синий при наведении */
+        }
+        .footer__text {
+            margin-top: 20px;
+        }
+        .footer__text .text__question {
+            font-size: 1rem;
+            color: #555;
+        }
+        .footer__text .text__link {
+            color: #007bff;
+            text-decoration: none;
+        }
+        .footer__text .text__link:hover {
+            text-decoration: underline;
+        }
+    </style>
   </head>
   <body>
-  <form class="form-2" method="post">
-           {% csrf_token %}
-  <div class="login">
+    <form method="post">
+      {% csrf_token %}
       <div class="login">
-      <div class="login__card card">
-        <div class="card__title">Вход</div>
-        <div class="card__form form">
-          <input class="form__input" name="username" placeholder="Введите логин" />
-          <input
-            class="form__input"
-            type="password"
-            name="password"
-            placeholder="Введите пароль"
-          />
-        </div>
-        <div class="card__footer footer">
-          <button class="footer__login">Войти</button>
-          <div class="footer__text text">
-            <span class="text__question">Нет аккаунта?</span>
-            <a class="text__link" href="{% url 'register' %}">Зарегистрироваться</a>
+        <div class="login__card card">
+          <div class="card__title">Вход</div>
+          <div class="card__form form">
+            <input class="form__input" name="username" placeholder="Введите логин" required />
+            <input class="form__input" type="password" name="password" placeholder="Введите пароль" required />
+          </div>
+          <div class="card__footer footer">
+            <button type="submit" class="footer__login">Войти</button>
+            <div class="footer__text text">
+              <span class="text__question">Нет аккаунта?</span>
+              <a class="text__link" href="{% url 'register' %}">Зарегистрироваться</a>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-
-    </div>
     </form>
   </body>
 </html>

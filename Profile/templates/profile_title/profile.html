@@ -1,16 +1,94 @@
+{% load static %}
 <!DOCTYPE html>
-<html lang="en">
-<head>
+<html lang="ru">
+  <head>
     <meta charset="UTF-8">
     <title>Профиль</title>
-</head>
-<body>
-    <h1>Привет, {{ user.username }}!</h1>
-    <p>Добро пожаловать в ваш профиль.</p>
-    
-    <form method="POST" action="{% url 'logout' %}">
-        {% csrf_token %}
-        <button class="logout-button" type="submit">Выйти</button>
-    </form>
-</body>
+    <meta name="description" content="Профиль пользователя" />
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,300,300italic,400italic,600" rel="stylesheet">
+    <link href="//netdna.bootstrapcdn.com/font-awesome/3.1.1/css/font-awesome.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'registration/register.css' %}">
+    <style>
+      /* Основные стили */
+      body {
+          font-family: 'Arial', sans-serif;
+          background-color: #ffffff;
+          margin: 0;
+          padding: 0;
+      }
+      .profile {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          flex-direction: column;
+          height: 100vh;
+          background-color: #f8f9fa;
+      }
+      .profile__card {
+          background-color: #ffffff;
+          box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+          border-radius: 8px;
+          padding: 30px;
+          width: 100%;
+          max-width: 400px;
+          text-align: center;
+      }
+      .profile__avatar {
+          width: 100px;
+          height: 100px;
+          border-radius: 50%;
+          margin-bottom: 20px;
+          object-fit: cover;
+      }
+      .profile__username {
+          font-size: 1.8rem;
+          font-weight: bold;
+          color: #333;
+          margin-bottom: 20px;
+      }
+      .btn {
+          display: inline-block;
+          padding: 10px 20px;
+          background-color: #007bff;
+          color: white;
+          border-radius: 5px;
+          text-decoration: none;
+          font-size: 1.1rem;
+          margin-bottom: 20px;
+          transition: background-color 0.3s ease;
+      }
+      .btn:hover {
+          background-color: #0056b3;
+      }
+      .logout-button {
+          width: 100%;
+          padding: 12px;
+          background-color: #dc3545;
+          color: white;
+          border: none;
+          border-radius: 5px;
+          font-size: 1.2rem;
+          cursor: pointer;
+          transition: background-color 0.3s ease;
+      }
+      .logout-button:hover {
+          background-color: #c82333;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="profile">
+      <div class="profile__card">
+        <!-- Добавление аватара -->
+        <img src="{% static 'images/avatar.jpg' %}" alt="Аватар пользователя" class="profile__avatar" />
+        <h1 class="profile__username">Привет, {{ user.username }}!</h1>
+        <a href="{% url 'register' %}" class="btn">Мои курсы</a>
+        
+        <form method="POST" action="{% url 'logout' %}">
+            {% csrf_token %}
+            <button class="logout-button" type="submit">Выйти</button>
+        </form>
+      </div>
+    </div>
+  </body>
 </html>
