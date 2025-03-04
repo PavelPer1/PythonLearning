@@ -16,11 +16,12 @@
         .header {
             background-color: #ffffff;
             color: #ffffff;
-            padding: 15px 50px;
+            padding: 15px 260px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             font-weight: bold;
+            border-bottom: 0.5px solid #000; /* Линия под хедером */
         }
         .header h1 {
             margin: 0;
@@ -41,6 +42,8 @@
             margin-right: 15px;
             font-size: 1rem;
             transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease;
+            user-select: none; /* Запрещает выделение */
+            -webkit-tap-highlight-color: transparent; /* Убирает синий фон при тапе на мобильных устройствах */
         }
         .header .left-btns .btn:hover, .header .right-btns .btn:hover {
             background: #e2e6ea;
@@ -54,7 +57,7 @@
         /* Убираем голубой оттенок при фокусе и клике */
         .header .btn:focus, .header .btn:active {
             outline: none !important;
-    box-shadow: none !important;
+            box-shadow: none !important;
         }
 
         .info {
@@ -97,18 +100,44 @@
             max-width: 100px;
             margin-bottom: 15px;
         }
-        .recomendations .recommendation h3 {
-            font-size: 1.5rem;
-            margin-bottom: 10px;
-            color: #333;
-        }
-        .recomendations .recommendation p {
-            font-size: 1rem;
-            color: #777;
+        .recomendations .recommendation h3, .recomendations .recommendation p {
+            color: #000; /* Теперь весь текст в recomendations черного цвета */
         }
         .recomendations a {
             text-decoration: none; /* Убирает подчеркивание */
         }
+.tech-icons {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1; /* Чтобы значки были позади контента */
+    pointer-events: none; /* Отключает клики по значкам */
+}
+
+.icon {
+    position: absolute;
+    width: 80px; /* Размер значка */
+    opacity: 0.5; /* Прозрачность */
+    animation: float 6s infinite ease-in-out;
+}
+
+/* Размещаем значки в случайных местах */
+.python { top: 10%; left: 5%; }
+.django { top: 50%; left: 80%; }
+.js { top: 80%; left: 35%; }
+.html { top: 10%; left: 90%; }
+.css { top: 50%; left: 15%; }
+.postgresql { top: 80%; left: 60%; }
+
+/* Анимация значков */
+@keyframes float {
+    0% { transform: translateY(0); }
+    50% { transform: translateY(30px); }
+    100% { transform: translateY(0); }
+}
+
     </style>
 </head>
 <body>
@@ -135,20 +164,26 @@
 
     <div class="recomendations container">
         <a href="{% url 'register' %}" class="recommendation">
-            <img src="{% static 'images/icon-programming.svg' %}" alt="Программирование">
             <h3>Программирование с нуля</h3>
             <p>Начните с основ и станьте экспертом в программировании.</p>
         </a>
         <a href="{% url 'register' %}" class="recommendation">
-            <img src="{% static 'images/icon-web-development.svg' %}" alt="Веб-разработка">
             <h3>Разработка веб-приложений</h3>
             <p>Изучите все о создании современных веб-приложений.</p>
         </a>
         <a href="{% url 'register' %}" class="recommendation">
-            <img src="{% static 'images/icon-algorithms.svg' %}" alt="Алгоритмы">
             <h3>Алгоритмы и структуры данных</h3>
             <p>Развивайте критическое мышление и решайте задачи эффективно.</p>
         </a>
     </div>
+    <div class="tech-icons">
+    <img src="https://img.icons8.com/?size=48&id=13441&format=png" class="icon python">
+    <img src="https://img.icons8.com/?size=50&id=XPdRFanRZtNK&format=png" class="icon django">
+    <img src="https://img.icons8.com/?size=80&id=6eTRpgF0TFTj&format=png" class="icon js">
+    <img src="https://img.icons8.com/?size=50&id=1043&format=png" class="icon html">
+    <img src="https://img.icons8.com/?size=50&id=1045&format=png" class="icon css">
+    <img src="https://img.icons8.com/?size=80&id=eJCmZxqMUnt8&format=png" class="icon postgresql">
+</div>
+
 </body>
 </html>
