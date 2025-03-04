@@ -137,7 +137,27 @@
     50% { transform: translateY(30px); }
     100% { transform: translateY(0); }
 }
-
+/* Sidebar styles */
+        .profile-sidebar {
+            position: fixed;
+            top: 0;
+            right: -25%; /* Initially hidden */
+            width: 25%;
+            height: 100vh;
+            background: #f8f9fa;
+            box-shadow: -2px 0 5px rgba(0, 0, 0, 0.2);
+            transition: right 0.3s ease-in-out;
+            padding: 20px;
+        }
+        .profile-sidebar.active {
+            right: 0; /* Show sidebar */
+        }
+        .close-btn {
+            display: block;
+            text-align: right;
+            font-size: 20px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -148,14 +168,33 @@
             <a href="{% url 'profile' %}" class="btn">Вебинары</a>
         </div>
         <div class="right-btns">
-            {% if not request.user.is_authenticated %}
-                <a href="{% url 'profile' %}" class="btn">Войти</a>
-                <a href="{% url 'register' %}" class="btn">Регистрация</a>
+            {% if request.user.is_authenticated %}
+                <button class="btn" id="profileBtn">{{ user.username }}</button>
             {% else %}
-                <a href="{% url 'profile' %}" class="btn">{{ user.username }}</a>
+                <a href="{% url 'login' %}" class="btn">Войти</a>
+                <a href="{% url 'register' %}" class="btn">Регистрация</a>
             {% endif %}
         </div>
     </header>
+    
+    <!-- Profile Sidebar -->
+    <div class="profile-sidebar" id="profileSidebar">
+        <span class="close-btn" id="closeSidebar">&times;</span>
+        <h3>Профиль пользователя</h3>
+        <p><strong>Имя:</strong> {{ user.username }}</p>
+        <p><strong>Email:</strong> {{ user.email }}</p>
+        <p><strong>Дата регистрации:</strong> {{ user.date_joined }}</p>
+        <a href="{% url 'logout' %}" class="btn">Выйти</a>
+    </div>
+
+    <script>
+        document.getElementById("profileBtn").addEventListener("click", function() {
+            document.getElementById("profileSidebar").classList.toggle("active");
+        });
+        document.getElementById("closeSidebar").addEventListener("click", function() {
+            document.getElementById("profileSidebar").classList.remove("active");
+        });
+    </script>
 
     <div class="info container">
         <h2>Лучшая платформа для обучения!</h2>
