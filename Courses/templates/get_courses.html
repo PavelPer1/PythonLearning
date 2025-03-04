@@ -51,9 +51,29 @@
             transform: translateY(-5px);
         }
         .container {
-            max-width: 900px;
-            margin: auto;
+            display: flex;
+            justify-content: space-between;
             padding: 20px;
+        }
+        .sidebar {
+            width: 25%;
+            background-color: #f1f1f1;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .content {
+            width: 45%;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .description {
+            width: 25%;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
         .CodeMirror {
             border: 1px solid #eee;
@@ -66,12 +86,43 @@
             border: 1px solid #ccc;
             background-color: #f9f9f9;
         }
+        .header h1 a {
+            text-decoration: none;
+            color: inherit;
+        }
+/* Настройки для контейнера CodeMirror */
+.CodeMirror {
+    border: none; /* Убираем стандартную рамку */
+    border-radius: 8px; /* Закругляем углы */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15); /* Добавляем легкую тень */
+    height: 300px;
+    font-family: "Consolas", "Courier New", monospace;
+    background-color: #2b2b2b; /* Темный фон */
+    color: #f8f8f2; /* Светлый текст */
+}
+
+/* Настройка внутреннего отступа у строк редактора */
+.CodeMirror-lines {
+    padding: 10px;
+}
+
+/* Настройки курсора и выделения */
+.CodeMirror-cursor {
+    border-left: 1px solid #f8f8f2;
+}
+.CodeMirror-focused .CodeMirror-selected {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+/* Стили для подсветки синтаксиса можно дополнительно настроить через тему CodeMirror, 
+   здесь используется базовый dark-темный фон */
+
     </style>
 </head>
 <body>
     <header class="header container-fluid">
         <div class="left-btns">
-            <h1>PyMi</h1>
+            <h1><a href="{% url 'home'%}"> PyMi</a></h1>
             <a href="{% url 'profile' %}" class="btn">Курсы</a>
             <a href="{% url 'profile' %}" class="btn">Вебинары</a>
         </div>
@@ -86,22 +137,40 @@
     </header>
 
     <div class="container">
-        <h2>Курс: {{ courses.name }}</h2>
-        <p><strong>Преподаватель:</strong> {{ courses.teacher }}</p>
-        <p><strong>Прогресс:</strong> {{ courses.progress }}%</p>
-        <p><strong>Описание задания:</strong> {{ courses.description }}</p>
+        <!-- Левая часть - Разделы заданий -->
+        <div class="sidebar">
+            <h4>Разделы</h4>
+            <ul>
+                <li><a href="#">Задание 1</a></li>
+                <li><a href="#">Задание 2</a></li>
+                <li><a href="#">Задание 3</a></li>
+                <li><a href="#">Задание 4</a></li>
+            </ul>
+        </div>
 
-        <h3>Python Online Compiler</h3>
-        <form method="POST" action="{% url 'course_with_compiler' courses.name %}">
-            {% csrf_token %}
-            <textarea id="code" name="codearea"></textarea>
-            <button type="submit" class="btn">Run</button>
-        </form>
+        <!-- Центральная часть - Python компилятор -->
+        <div class="content">
+            <h2>Курс: {{ courses.name }}</h2>
+            <p><strong>Преподаватель:</strong> {{ courses.teacher }}</p>
+            <h3>Python Online Compiler</h3>
+            <form method="POST" action="{% url 'course_with_compiler' courses.name %}">
+                {% csrf_token %}
+                <textarea id="code" name="codearea">{{ code }}</textarea>
 
-        <div id="output">
-            {% if output %}
-                <pre>{{ output }}</pre>
-            {% endif %}
+                <button type="submit" class="btn">Run</button>
+            </form>
+
+            <div id="output">
+                {% if output %}
+                    <pre>{{ output }}</pre>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Правая часть - Условие задания -->
+        <div class="description">
+            <h4>Условие задания</h4>
+            <p>{{ courses.task_description }}</p>
         </div>
     </div>
 

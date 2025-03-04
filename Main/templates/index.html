@@ -15,46 +15,44 @@
         }
         .header {
             background-color: #ffffff;
-            color: #ffffff;
+            color: #000;
             padding: 15px 260px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             font-weight: bold;
-            border-bottom: 0.5px solid #000; /* Линия под хедером */
+            border-bottom: 0.5px solid #000;
         }
         .header h1 {
             margin: 0;
             font-size: 2rem;
-            color: #000000;
-            margin-right: 30px;
+             margin-right: 50px;
         }
         .header .left-btns, .header .right-btns {
             display: flex;
             align-items: center;
         }
-        .header .left-btns .btn, .header .right-btns .btn {
+        .header .btn {
             background: #f1f1f1;
-            color: #000000;
+            color: #000;
             padding: 10px 15px;
             border-radius: 5px;
             text-decoration: none;
             margin-right: 15px;
             font-size: 1rem;
             transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease;
-            user-select: none; /* Запрещает выделение */
-            -webkit-tap-highlight-color: transparent; /* Убирает синий фон при тапе на мобильных устройствах */
+            user-select: none;
         }
-        .header .left-btns .btn:hover, .header .right-btns .btn:hover {
+        .header .btn:hover {
             background: #e2e6ea;
             color: #000;
-            transform: translateY(-5px); /* Поднимание кнопки */
+            transform: translateY(-5px);
         }
         .header .right-btns .btn {
             margin-left: 15px;
         }
 
-        /* Убираем голубой оттенок при фокусе и клике */
+        /* Remove outline and box-shadow on focus and active */
         .header .btn:focus, .header .btn:active {
             outline: none !important;
             box-shadow: none !important;
@@ -63,7 +61,6 @@
         .info {
             text-align: center;
             padding: 50px 20px;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         .info h2 {
             font-size: 2.5rem;
@@ -76,13 +73,13 @@
             color: #555;
             line-height: 1.6;
         }
+
         .recomendations {
             display: flex;
             justify-content: center;
             flex-wrap: wrap;
             gap: 20px;
             padding: 50px 0;
-            margin-top: -30px; /* Уменьшаем отступ сверху */
         }
         .recomendations .recommendation {
             background-color: #f1f1f1;
@@ -100,100 +97,166 @@
             max-width: 100px;
             margin-bottom: 15px;
         }
-        .recomendations .recommendation h3, .recomendations .recommendation p {
-            color: #000; /* Теперь весь текст в recomendations черного цвета */
-        }
         .recomendations a {
-            text-decoration: none; /* Убирает подчеркивание */
+            text-decoration: none;
         }
-.tech-icons {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: -1; /* Чтобы значки были позади контента */
-    pointer-events: none; /* Отключает клики по значкам */
-}
 
-.icon {
-    position: absolute;
-    width: 80px; /* Размер значка */
-    opacity: 0.5; /* Прозрачность */
-    animation: float 6s infinite ease-in-out;
-}
-
-/* Размещаем значки в случайных местах */
-.python { top: 10%; left: 5%; }
-.django { top: 50%; left: 80%; }
-.js { top: 80%; left: 35%; }
-.html { top: 10%; left: 90%; }
-.css { top: 50%; left: 15%; }
-.postgresql { top: 80%; left: 60%; }
-
-/* Анимация значков */
-@keyframes float {
-    0% { transform: translateY(0); }
-    50% { transform: translateY(30px); }
-    100% { transform: translateY(0); }
-}
-/* Sidebar styles */
-        .profile-sidebar {
+        .tech-icons {
             position: fixed;
             top: 0;
-            right: -25%; /* Initially hidden */
-            width: 25%;
-            height: 100vh;
-            background: #f8f9fa;
-            box-shadow: -2px 0 5px rgba(0, 0, 0, 0.2);
-            transition: right 0.3s ease-in-out;
-            padding: 20px;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
         }
-        .profile-sidebar.active {
-            right: 0; /* Show sidebar */
+        .icon {
+            position: absolute;
+            width: 80px;
+            opacity: 0.5;
+            animation: float 6s infinite ease-in-out;
+        }
+        .python { top: 10%; left: 5%; }
+        .django { top: 50%; left: 80%; }
+        .js { top: 80%; left: 35%; }
+        .html { top: 10%; left: 90%; }
+        .css { top: 50%; left: 15%; }
+        .postgresql { top: 80%; left: 60%; }
+
+        @keyframes float {
+            0% { transform: translateY(0); }
+            50% { transform: translateY(30px); }
+            100% { transform: translateY(0); }
+        }
+
+        .profile-dropdown {
+            position: fixed;
+            top: 0;
+            right: -25%;
+            width: 25%;
+            height: 100%;
+            background: #f8f9fa;
+            box-shadow: -3px 0 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            transition: right 0.3s ease-in-out;
+        }
+        .profile-dropdown.active {
+            right: 0;
+        }
+        .profile-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        .profile-header img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+        }
+        .profile-content {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .profile-content a {
+            display: block;
+            text-align: center;
+            background: #007bff;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            text-decoration: none;
+            transition: background 0.3s;
+        }
+        .profile-content a:hover {
+            background: #0056b3;
         }
         .close-btn {
-            display: block;
-            text-align: right;
-            font-size: 20px;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
             cursor: pointer;
         }
+
+        @media (max-width: 768px) {
+            .header {
+                padding: 15px;
+            }
+            .header h1 {
+                font-size: 1.5rem;
+            }
+            .header .left-btns, .header .right-btns {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .header .btn {
+                margin-right: 10px;
+                font-size: 0.9rem;
+            }
+            .recomendations {
+                flex-direction: column;
+                padding: 20px 0;
+            }
+        }
+.close-btn {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #000;
+}
+
+.close-btn:hover {
+    color: #dc3545;
+}
+.header h1 a {
+    text-decoration: none;
+    color: inherit;
+}
+
+
     </style>
 </head>
 <body>
     <header class="header container-fluid">
         <div class="left-btns">
-            <h1>PyMi</h1>
+            <h1><a href="{% url 'home'%}"> PyMi</h1>
             <a href="{% url 'profile' %}" class="btn">Курсы</a>
             <a href="{% url 'profile' %}" class="btn">Вебинары</a>
         </div>
         <div class="right-btns">
-            {% if request.user.is_authenticated %}
-                <button class="btn" id="profileBtn">{{ user.username }}</button>
-            {% else %}
-                <a href="{% url 'login' %}" class="btn">Войти</a>
+            {% if not request.user.is_authenticated %}
+                <a href="{% url 'profile' %}" class="btn">Войти</a>
                 <a href="{% url 'register' %}" class="btn">Регистрация</a>
+            {% else %}
+                <button class="btn" onclick="toggleProfile()">{{ user.username }}</button>
             {% endif %}
         </div>
     </header>
-    
-    <!-- Profile Sidebar -->
-    <div class="profile-sidebar" id="profileSidebar">
-        <span class="close-btn" id="closeSidebar">&times;</span>
-        <h3>Профиль пользователя</h3>
-        <p><strong>Имя:</strong> {{ user.username }}</p>
-        <p><strong>Email:</strong> {{ user.email }}</p>
-        <p><strong>Дата регистрации:</strong> {{ user.date_joined }}</p>
-        <a href="{% url 'logout' %}" class="btn">Выйти</a>
+
+    <div class="profile-dropdown" id="profileDropdown">
+        <div class="profile-header">
+            <button class="close-btn" onclick="closeProfile()">×</button>
+            <img src="https://img.icons8.com/?size=50&id=12438&format=png" alt="Аватар пользователя" class="profile__avatar" />
+            <p><strong>{{ user.username }}</strong></p>
+        </div>
+        <div class="profile-content">
+            <a href="{% url 'profile' %}">Мой профиль</a>
+            <a href="{% url 'logout' %}" style="background: #dc3545;">Выйти</a>
+        </div>
     </div>
 
     <script>
-        document.getElementById("profileBtn").addEventListener("click", function() {
-            document.getElementById("profileSidebar").classList.toggle("active");
-        });
-        document.getElementById("closeSidebar").addEventListener("click", function() {
-            document.getElementById("profileSidebar").classList.remove("active");
-        });
+        function toggleProfile() {
+            const profileDropdown = document.getElementById("profileDropdown");
+            profileDropdown.classList.toggle("active");
+        }
+        function closeProfile() {
+    const profileDropdown = document.getElementById("profileDropdown");
+    profileDropdown.classList.remove("active");
+}
+
     </script>
 
     <div class="info container">
@@ -215,14 +278,15 @@
             <p>Развивайте критическое мышление и решайте задачи эффективно.</p>
         </a>
     </div>
+
     <div class="tech-icons">
-    <img src="https://img.icons8.com/?size=48&id=13441&format=png" class="icon python">
-    <img src="https://img.icons8.com/?size=50&id=XPdRFanRZtNK&format=png" class="icon django">
-    <img src="https://img.icons8.com/?size=80&id=6eTRpgF0TFTj&format=png" class="icon js">
-    <img src="https://img.icons8.com/?size=50&id=1043&format=png" class="icon html">
-    <img src="https://img.icons8.com/?size=50&id=1045&format=png" class="icon css">
-    <img src="https://img.icons8.com/?size=80&id=eJCmZxqMUnt8&format=png" class="icon postgresql">
-</div>
+        <img src="https://img.icons8.com/?size=48&id=13441&format=png" class="icon python">
+        <img src="https://img.icons8.com/?size=50&id=XPdRFanRZtNK&format=png" class="icon django">
+        <img src="https://img.icons8.com/?size=80&id=6eTRpgF0TFTj&format=png" class="icon js">
+        <img src="https://img.icons8.com/?size=50&id=1043&format=png" class="icon html">
+        <img src="https://img.icons8.com/?size=50&id=1045&format=png" class="icon css">
+        <img src="https://img.icons8.com/?size=80&id=eJCmZxqMUnt8&format=png" class="icon postgresql">
+    </div>
 
 </body>
 </html>

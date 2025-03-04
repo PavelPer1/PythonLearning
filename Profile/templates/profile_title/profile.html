@@ -74,6 +74,7 @@
       .logout-button:hover {
           background-color: #c82333;
       }
+      
     </style>
   </head>
   <body>
@@ -82,7 +83,8 @@
         <!-- Добавление аватара -->
         <img src="https://img.icons8.com/?size=50&id=12438&format=png" alt="Аватар пользователя" class="profile__avatar" />
         <h1 class="profile__username">Привет, {{ user.username }}!</h1>
-        <a href="{% url 'register' %}" class="btn">Мои курсы</a>
+        <a href="{% url 'course_with_compiler' crs='PythonLerning' %}" class="btn">Мои курсы</a>
+        <a href="{% url 'home' %}" class="btn">Main</a>
         
         <form method="POST" action="{% url 'logout' %}">
             {% csrf_token %}

@@ -55,6 +55,8 @@ def execute_code_safely(code):
 def course_with_compiler(request, crs):
     # Получение курса
     course = get_object_or_404(Courses, name=crs)
+    output = None  # Инициализируем output
+    code = ""      # Инициализируем code
 
     if request.method == "POST":
         # Если POST-запрос, выполняем код из компилятора
@@ -67,12 +69,13 @@ def course_with_compiler(request, crs):
         output = execute_code_safely(code)
     else:
         # Если GET-запрос, ничего не выполняем, только отображаем задание
-        output = None
+        code = ""
 
     # Контекст для отображения курса и результата выполнения кода
     context = {
         'courses': course,
         'output': output,
+        'code': code,
     }
 
     return render(request, 'get_courses.html', context)
