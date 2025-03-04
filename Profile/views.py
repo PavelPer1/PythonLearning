@@ -17,7 +17,7 @@ def login_view(request):
 
 def logout_view(request):
     logout(request)
-    return redirect('register')
+    return redirect('main_title')
 
 class RegisterUser(CreateView):
     form_class = RegisterForm
@@ -44,6 +44,7 @@ class RegisterUser(CreateView):
 class LoginUser(LoginView):
     form_class = AuthenticationForm
     template_name = 'registration/login.html'
+    success_url = reverse_lazy('profile')
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
