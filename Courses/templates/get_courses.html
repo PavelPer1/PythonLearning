@@ -9,12 +9,16 @@
     <link rel="stylesheet" href="https://codemirror.net/lib/codemirror.css">
     <script src="https://codemirror.net/lib/codemirror.js"></script>
     <script src="https://codemirror.net/mode/python/python.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.2/codemirror.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.2/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.2/mode/python/python.min.js"></script>
     <style>
         body {
             font-family: 'Arial', sans-serif;
             background-color: #ffffff;
             margin: 0;
             padding: 0;
+             min-height: 100vh;
         }
         .header {
             background-color: #ffffff;
@@ -90,6 +94,23 @@
             text-decoration: none;
             color: inherit;
         }
+        #codearea,
+        #output {
+            height: 300px;
+            font-size: 16px;
+            width: 100%;
+            border: 1px solid black;
+            border-radius: 5px;
+            padding: 12px;
+            margin-bottom: 24px;
+            resize: vertical;
+        }
+
+        #output {
+            height: 150px;
+            padding: 5px;
+        }
+
 
     </style>
 </head>
@@ -129,9 +150,13 @@
             <h3>Python Online Compiler</h3>
             <form method="POST" action="{% url 'course_with_compiler' courses.name %}">
                 {% csrf_token %}
-                <textarea id="code" name="codearea">{{ code }}</textarea>
-
+                <div>
+                    <label for="codearea">Code Area</label>
+                    <textarea id="code" name="codearea">{{ code }}</textarea>
+                </div>
                 <button type="submit" class="btn">Run</button>
+
+                
             </form>
 
             <div id="output">
@@ -139,6 +164,7 @@
                     <pre>{{ output }}</pre>
                 {% endif %}
             </div>
+            
         </div>
 
         <!-- Правая часть - Условие задания -->
@@ -152,7 +178,9 @@
         var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
             lineNumbers: true,
             mode: "python",
+            indentUnit: 4,
             theme: "default",
+            extraKeys: { Tab: "indentMore", "Shift-Tab": "indentLess" }
         });
     </script>
 </body>
