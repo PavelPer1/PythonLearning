@@ -1,10 +1,18 @@
 from django.shortcuts import render, get_object_or_404
 from Courses.models import StudentCourser, Courses
 from django.http import HttpResponse
+from django.contrib.auth.decorators import login_required
+
 
 import traceback
 from io import StringIO
 from contextlib import redirect_stdout
+from Courses.models import Courses, StudentCourser
+
+
+def course_list(request):
+    courses = Courses.objects.all()  # Получаем все курсы
+    return render(request, 'course_list.html', {'courses': courses})
 
 def execute_code_safely(code):
     try:
