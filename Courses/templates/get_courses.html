@@ -110,7 +110,14 @@
             height: 150px;
             padding: 5px;
         }
-
+        .completed {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+        }
+        .not-completed {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+        }
 
     </style>
 </head>
@@ -135,11 +142,11 @@
         <!-- Левая часть - Разделы заданий -->
         <div class="sidebar">
             <h4>Разделы</h4>
-            <ul>
-                <li><a href="#">Задание 1</a></li>
-                <li><a href="#">Задание 2</a></li>
-                <li><a href="#">Задание 3</a></li>
-                <li><a href="#">Задание 4</a></li>
+            <ul id="taskList">
+                <li><a href="#" data-task="task1">Задание 1</a></li>
+                <li><a href="#" data-task="task2">Задание 2</a></li>
+                <li><a href="#" data-task="task3">Задание 3</a></li>
+                <li><a href="#" data-task="task4">Задание 4</a></li>
             </ul>
         </div>
 
@@ -167,11 +174,43 @@
             
         </div>
 
-        <!-- Правая часть - Условие задания -->
         <div class="description">
             <h4>Условие задания</h4>
-            <p>{{ courses.task_description }}</p>
+            <p id="taskDescription">Выберите задание</p>
+            <div class="task-status">
+                <p id="statusMessage" class="{% if task_completed %}completed{% else %}not-completed{% endif %}">
+                    {% if task_completed %}
+                        Задание выполнено!
+                    {% else %}
+                        Задание не выполнено.
+                    {% endif %}
+                </p>
+            </div>
         </div>
+
+    <script>
+        // Загружаем переданный JSON в JavaScript
+        const tasks = JSON.parse('{{ tasks_json|escapejs }}');
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const taskLinks = document.querySelectorAll('.sidebar a');
+            const description = document.getElementById('taskDescription');
+            const statusMessage = document.getElementById('statusMessage');
+
+            taskLinks.forEach(function (link) {
+                link.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const taskId = link.getAttribute('data-task');
+                    description.textContent = tasks[taskId]?.description || 'Описание не найдено';
+
+                    // Изменяем статус задания
+                    statusMessage.textContent = 'Задание не выполнено';
+                    statusMessage.classList.remove('completed');
+                    statusMessage.classList.add('not-completed');
+                });
+            });
+        });
+    </script>
     </div>
 
     <script>
