@@ -1,19 +1,50 @@
+from sqlite3 import IntegrityError
+
 from django.shortcuts import render, get_object_or_404
 from Courses.models import StudentCourser, Courses
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
-
+from django.shortcuts import render, redirect
 
 import json
 import traceback
 from io import StringIO
 from contextlib import redirect_stdout
 from Courses.models import Courses, StudentCourser
+from Profile.models import Student
 
 
 def course_list(request):
-    courses = Courses.objects.all()  # Получаем все курсы
-    return render(request, 'course_list.html', {'courses': courses})
+    my_crs = []
+    crs = Courses.objects.all()  # Получаем все курсы
+
+    for i in StudentCourser.objects.all():
+        if i.student.name == request.user:
+            my_crs += [i.courses]
+    if request.method == "POST":
+        course_id = request.POST.get('course_id')
+        try:
+            for i in crs:
+                print(i.id, int(course_id))
+            course = Courses.objects.get(id=int(course_id))
+            student = Student.objects.get(name=request.user)
+            if student:
+                # Проверка на существование записи
+                if not StudentCourser.objects.filter(student=student, courses=course).exists():
+                    StudentCourser(courses=course, student=student).save()
+                else:
+                    print('Запись уже существует')  # В продакшене - сообщение пользователю
+            else:
+                print("У пользователя нет связанного студента!")  # Обработка ошибки
+        except Courses.DoesNotExist:
+            print('Курс не найден')  # Обработка ошибки
+        except Exception as e:
+            print(f"Произошла ошибка: {e}")  # Обработка ошибок
+        return redirect(request.path_info)
+    return render(request, 'course_list.html', {'courses': crs, 'my_crs': my_crs})
+
+
+
 
 def execute_code_safely(code):
     try:

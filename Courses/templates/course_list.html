@@ -31,20 +31,39 @@
         <h1 class="my-4">Все курсы</h1>
         <div class="row">
             {% for course in courses %}
+            <form method="post" action="{% url 'course_list' %}">
+                {% csrf_token %}
                 <div class="col-md-4 mb-4">
                     <div class="course-card p-3">
                         <h3>{{ course.name }}</h3>
+                        <input type="hidden" name="course_id" value="{{ course.id }}">
                         <p><strong>Автор:</strong> {{ course.author }}</p>
                         <p><strong>Преподаватель:</strong> {{ course.teacher }}</p>
                         <p><strong>Язык:</strong> {{ course.language }}</p>
                         <p><strong>Прогресс:</strong> {{ course.progress }}</p>
-                        <a href="{% url 'course_with_compiler' course.name %}" class="btn btn-primary">Перейти</a>
+                    <button id="sub"  class="btn btn-primary">Подписаться</button></a>
                     </div>
                 </div>
+                </form>
             {% empty %}
                 <p>Курсы пока не добавлены.</p>
             {% endfor %}
+
         </div>
+    <div class="container">
+        <h1 class="my-4">Курсы на которые подписан</h1>
+        <div class="row">
+            {% for course in my_crs %}
+            <div class="col-md-4 mb-4">
+            <div class="course-card p-3">
+                <h3>{{ course.name }}</h3>
+                <p><strong>Автор:</strong> {{ course.author }}</p>
+                <p><strong>Преподаватель:</strong> {{ course.teacher }}</p>
+                <p><strong>Язык:</strong> {{ course.language }}</p>
+                <p><strong>Прогресс:</strong> {{ course.progress }}</p>
+                {% endfor %}
+            </div></div>
+    </div>
     </div>
 </body>
 </html>
