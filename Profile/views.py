@@ -8,12 +8,13 @@ from django.shortcuts import render, redirect
 from .models import Teacher, Student
 from .settings import *
 from Profile.forms import RegisterForm, CreateUserForm
-
+from Courses.models import Courses, StudentCourser
 
 @login_required
 def login_view(request):
     user = request.user  # Получаем текущего пользователя
-    return render(request, 'profile_title/profile.html', {'user': user})
+    courses = Courses.objects.all()
+    return render(request, 'profile_title/profile.html', {'user': user, 'courses': courses})
 
 def logout_view(request):
     logout(request)
