@@ -213,6 +213,7 @@
 .header h1 a {
     text-decoration: none;
     color: inherit;
+    font-weight: normal;
 }
 
 
@@ -223,7 +224,11 @@
         <div class="left-btns">
             <h1><a href="{% url 'home'%}"> PyMi</h1>
             <a href="{% url 'profile' %}" class="btn">Курсы</a>
-            <a href="{% url 'profile' %}" class="btn">Вебинары</a>
+            {% if not request.user.is_authenticated %}
+                
+            {% else %}
+                <a href="{% url 'profile' %}" class="btn">Мои курсы</a>
+            {% endif %}
         </div>
         <div class="right-btns">
             {% if not request.user.is_authenticated %}
