@@ -223,16 +223,16 @@
     <header class="header container-fluid">
         <div class="left-btns">
             <h1><a href="{% url 'home'%}"> PyMi</h1>
-            <a href="{% url 'profile' %}" class="btn">Курсы</a>
+            <a href="{% url 'course_list' %}" class="btn">Курсы</a>
             {% if not request.user.is_authenticated %}
                 
             {% else %}
-                <a href="{% url 'profile' %}" class="btn">Мои курсы</a>
+                <a href="{% url 'my_courses' %}" class="btn">Мои курсы</a>
             {% endif %}
         </div>
         <div class="right-btns">
             {% if not request.user.is_authenticated %}
-                <a href="{% url 'profile' %}" class="btn">Войти</a>
+                <a href="{% url 'login' %}" class="btn">Войти</a>
                 <a href="{% url 'register' %}" class="btn">Регистрация</a>
             {% else %}
                 <button class="btn" onclick="toggleProfile()">{{ user.username }}</button>

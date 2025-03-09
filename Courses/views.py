@@ -13,6 +13,14 @@ from contextlib import redirect_stdout
 from Courses.models import Courses, StudentCourser
 from Profile.models import Student
 
+def my_courses_view(request):
+    my_crs = []
+    for i in StudentCourser.objects.all():
+        if i.student.name == request.user:
+            my_crs.append(i.courses)
+
+    return render(request, 'my_courses.html', {'my_crs': my_crs})
+
 
 def course_list(request):
     my_crs = []
