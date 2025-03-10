@@ -20,6 +20,6 @@ class Profile(models.Model):
     email = models.EmailField(max_length=250, null=True)
     number = models.CharField(max_length=50, null=True)
     fio = models.CharField(max_length=100, null=True)
-
+    avatar = models.ImageField(upload_to='avatars/', blank=True, null=True)
     def __str__(self):
         return str(self.user.name)
