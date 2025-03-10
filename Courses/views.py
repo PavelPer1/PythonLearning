@@ -26,31 +26,53 @@ def course_list(request):
     my_crs = []
     crs = Courses.objects.all()  # Получаем все курсы
 
+    # Получаем параметры поиска и сортировки из GET-запроса
+    search_query = request.GET.get('search', '')  
+    sort_by = request.GET.get('sort', 'name')  
+
+    # Фильтруем курсы по названию
+    if search_query:
+        crs = crs.filter(name__icontains=search_query)
+
+    # Применяем сортировку
+    if sort_by == 'name':
+        crs = crs.order_by('name')
+    elif sort_by == 'author':
+        crs = crs.order_by('author')
+    elif sort_by == 'language':
+        crs = crs.order_by('language')
+
+    # Проверяем, на какие курсы подписан пользователь
     for i in StudentCourser.objects.all():
         if i.student.name == request.user:
-            my_crs += [i.courses]
+            my_crs.append(i.courses)
+
+    # Обработка подписки на курс
     if request.method == "POST":
         course_id = request.POST.get('course_id')
         try:
-            for i in crs:
-                print(i.id, int(course_id))
             course = Courses.objects.get(id=int(course_id))
             student = Student.objects.get(name=request.user)
-            if student:
-                # Проверка на существование записи
-                if not StudentCourser.objects.filter(student=student, courses=course).exists():
-                    StudentCourser(courses=course, student=student).save()
-                else:
-                    print('Запись уже существует')  # В продакшене - сообщение пользователю
-            else:
-                print("У пользователя нет связанного студента!")  # Обработка ошибки
+            if student and not StudentCourser.objects.filter(student=student, courses=course).exists():
+                StudentCourser(courses=course, student=student).save()
         except Courses.DoesNotExist:
-            print('Курс не найден')  # Обработка ошибки
+            print('Курс не найден')
         except Exception as e:
-            print(f"Произошла ошибка: {e}")  # Обработка ошибок
+            print(f"Произошла ошибка: {e}")
         return redirect(request.path_info)
-    return render(request, 'course_list.html', {'courses': crs, 'my_crs': my_crs})
 
+    return render(request, 'course_list.html', {
+        'courses': crs,
+        'my_crs': my_crs,
+        'search_query': search_query,
+        'sort_by': sort_by,
+    })
+
+def course_detail(request, course_id):
+    course = get_object_or_404(Courses, id=course_id)  # Получаем курс по ID
+    students_count = StudentCourser.objects.filter(courses=course).count()  # Количество учеников на курсе
+
+    return render(request, 'course_detail.html', {'course': course, 'students_count': students_count})
 
 
 

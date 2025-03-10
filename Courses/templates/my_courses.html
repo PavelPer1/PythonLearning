@@ -144,6 +144,7 @@
     color: inherit;
 
 }
+
         .container {
             margin-top: 20px;
         }
@@ -157,6 +158,14 @@
         .course-card:hover {
             transform: translateY(-5px);
         }
+        .course-title {
+    color: #000; /* Измени на нужный цвет */
+    text-decoration: none; /* Убирает подчеркивание */
+}
+
+.course-title:hover {
+    color: blue; /* Цвет при наведении */
+}
     </style>
 </head>
 <body>
@@ -196,12 +205,12 @@
             {% for course in my_crs %}
                 <div class="col-md-4 mb-4">
                     <div class="course-card p-3">
-                        <h3>{{ course.name }}</h3>
+                        <h3><a href="{% url 'course_detail' course.id %}" class="course-title">{{ course.name }}</a></h3>
                         <p><strong>Автор:</strong> {{ course.author }}</p>
                         <p><strong>Преподаватель:</strong> {{ course.teacher }}</p>
                         <p><strong>Язык:</strong> {{ course.language }}</p>
                         <p><strong>Прогресс:</strong> {{ course.progress }}%</p>
-                        <a href="{% url 'course_with_compiler' course.name %}" class="btn btn-primary">Перейти</a>
+                        <a href="{% url 'course_with_compiler' course.name %}" class="btn btn-secondary mt-3">Перейти</a>
                     </div>
                 </div>
             {% empty %}
