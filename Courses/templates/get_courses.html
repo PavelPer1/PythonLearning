@@ -256,8 +256,8 @@
             {% for module in tasks_json.modules %}  <!-- Обратите внимание на courses -->
                 <li><h3>{{ module.title }}</h3>
                     <ul>
-                        {% for topic in tasks_json.topics %}
-                            <li>{{ topic }}</li>
+                        {% for topic in module.topics %}
+                            <li><a href="#" class="topic-link" data-title="{{ topic.title }}" data-description="{{ topic.description|escapejs }}">{{ topic.title }}</a></li>
                         {% endfor %}
                     </ul>
                 </li>
@@ -291,16 +291,17 @@
         </div>
 
         <div class="description">
-            <h4>Условие задания</h4>
-            <p id="taskDescription">Выберите задание</p>
-            <div class="task-status">
-                <p id="statusMessage" class="{% if task_completed %}completed{% else %}not-completed{% endif %}">
-                    {% if task_completed %}
-                        Задание выполнено!
-                    {% else %}
-                        Задание не выполнено.
-                    {% endif %}
-                </p>
+        <h4>Условие задания</h4>
+        <h5 id="taskTitle">Выберите задание</h5>
+        <p id="taskDescription">Выберите задание</p>
+        <div class="task-status">
+            <p id="statusMessage" class="{% if task_completed %}completed{% else %}not-completed{% endif %}">
+                {% if task_completed %}
+                    Задание выполнено!
+                {% else %}
+                    Задание не выполнено.
+                {% endif %}
+            </p>
             </div>
         </div>
 
@@ -349,5 +350,24 @@
 }
 
     </script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const topicLinks = document.querySelectorAll('.topic-link');
+        const taskTitleElement = document.getElementById('taskTitle');
+        const taskDescriptionElement = document.getElementById('taskDescription');
+
+        topicLinks.forEach(link => {
+            link.addEventListener('click', function(event) {
+                event.preventDefault(); // Предотвращаем переход по ссылке
+
+                const title = this.getAttribute('data-title');
+                const description = this.getAttribute('data-description');
+
+                taskTitleElement.textContent = title;
+                taskDescriptionElement.textContent = description;
+            });
+        });
+    });
+</script>
 </body>
 </html>

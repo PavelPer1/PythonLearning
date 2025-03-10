@@ -5,44 +5,115 @@
     {
       "title": "Введение в Python",
       "topics": [
-        "Установка Python",
-        "Первый скрипт",
-        "Переменные и типы данных",
-        "Операторы"
+        {
+          "title": "Установка Python",
+          "description": "Подробная инструкция по установке Python на различные операционные системы.",
+          "resources": ["https://python.org/downloads", "https://realpython.com/installing-python/"]
+        },
+        {
+          "title": "Первый скрипт",
+          "description": "Написание и запуск вашего первого Python скрипта. Hello, world!",
+          "example": "print('Hello, world!')"
+        },
+        {
+          "title": "Переменные и типы данных",
+          "description": "Изучение основных типов данных в Python: int, float, str, bool.",
+          "example": "x = 10\ny = 'Hello'\nprint(type(x))\nprint(type(y))"
+        },
+        {
+          "title": "Операторы",
+          "description": "Арифметические, логические операторы и операторы присваивания.",
+          "example": "a = 5\nb = 2\nprint(a + b)\nprint(a > b)"
+        }
       ]
     },
     {
       "title": "Управление потоком выполнения",
       "topics": [
-        "Условные операторы (if, elif, else)",
-        "Циклы (for, while)",
-        "Break и continue"
+        {
+          "title": "Условные операторы (if, elif, else)",
+          "description": "Использование условных операторов для принятия решений в коде.",
+          "example": "x = 10\nif x > 5:\n  print('x больше 5')\nelse:\n  print('x меньше или равно 5')"
+        },
+        {
+          "title": "Циклы (for, while)",
+          "description": "Использование циклов для повторения блоков кода.",
+          "example": "for i in range(5):\n  print(i)\n\ncount = 0\nwhile count < 3:\n  print(count)\n  count += 1"
+        },
+        {
+          "title": "Break и continue",
+          "description": "Управление выполнением циклов с помощью операторов break и continue.",
+          "example": "for i in range(10):\n  if i == 5:\n    break # Прерываем цикл\n  if i % 2 == 0:\n    continue # Пропускаем четные числа\n  print(i)"
+        }
       ]
     },
     {
       "title": "Функции",
       "topics": [
-        "Определение функций",
-        "Аргументы и параметры",
-        "Возврат значений",
-        "Рекурсия"
+        {
+          "title": "Определение функций",
+          "description": "Как определить собственные функции в Python.",
+          "example": "def greet(name):\n  print(f'Привет, {name}!')\n\ngreet('Alice')"
+        },
+        {
+          "title": "Аргументы и параметры","description": "Разница между аргументами и параметрами функций. Позиционные и именованные аргументы.",
+          "example": "def add(x, y):\n  return x + y\n\nresult = add(5, y=3) # y - именованный аргумент\nprint(result)"
+        },
+        {
+          "title": "Возврат значений",
+          "description": "Функции, возвращающие значения с помощью return.",
+          "example": "def multiply(x, y):\n  return x * y\n\nproduct = multiply(4, 6)\nprint(product)"
+        },
+        {
+          "title": "Рекурсия",
+          "description": "Функции, вызывающие сами себя.",
+          "example": "def factorial(n):\n  if n == 0:\n    return 1\n  else:\n    return n * factorial(n-1)\n\nprint(factorial(5))"
+        }
       ]
     },
     {
       "title": "Работа со списками",
       "topics": [
-        "Создание списков",
-        "Доступ к элементам",
-        "Методы работы со списками",
-        "Срезы"
+        {
+          "title": "Создание списков",
+          "description": "Различные способы создания списков в Python.",
+          "example": "my_list = [1, 2, 3]\nmy_list2 = list(range(5))"
+        },
+        {
+          "title": "Доступ к элементам",
+          "description": "Как получать доступ к элементам списка по индексу.",
+          "example": "my_list = ['a', 'b', 'c']\nprint(my_list[0]) # a"
+        },
+        {
+          "title": "Методы работы со списками",
+          "description": "Основные методы для добавления, удаления и изменения элементов списка: append, insert, remove, pop.",
+          "example": "my_list = [1, 2, 3]\nmy_list.append(4)\nmy_list.remove(2)\nprint(my_list)"
+        },
+        {
+          "title": "Срезы",
+          "description": "Использование срезов для получения подмножества элементов списка.",
+          "example": "my_list = [0, 1, 2, 3, 4, 5]\nprint(my_list[2:5]) # [2, 3, 4]"
+        }
       ]
     },
     {
       "title": "Словари",
       "topics": [
-        "Создание словарей",
-        "Доступ к элементам",
-        "Методы работы со словарями"
+        {
+          "title": "Создание словарей",
+          "description": "Различные способы создания словарей в Python.",
+          "example": "my_dict = {'name': 'Alice', 'age': 30}\nmy_dict2 = dict(name='Bob', age=25)"
+        },
+        {
+          "title": "Доступ к элементам",
+          "description": "Как получать доступ к значениям словаря по ключу.",
+          "example": "my_dict = {'name': 'Alice', 'age': 30}\nprint(my_dict['name'])"
+        },
+        {
+          "title": "Методы работы со словарями",
+          "description": "Основные методы для добавления, удаления и изменения элементов словаря: get, keys, values, items, update.",
+          "example": "my_dict = {'name': 'Alice', 'age': 30}\nprint(my_dict.get('city', 'Unknown'))\nprint(my_dict.keys())\nprint(my_dict.values())"
+        }
       ]
     }
   ],
