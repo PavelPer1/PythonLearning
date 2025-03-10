@@ -139,16 +139,22 @@
     </header>
 
     <div class="container">
-        <!-- Левая часть - Разделы заданий -->
-        <div class="sidebar">
-            <h4>Разделы</h4>
-            <ul id="taskList">
-                <li><a href="#" data-task="task1">Задание 1</a></li>
-                <li><a href="#" data-task="task2">Задание 2</a></li>
-                <li><a href="#" data-task="task3">Задание 3</a></li>
-                <li><a href="#" data-task="task4">Задание 4</a></li>
-            </ul>
-        </div>
+    <!-- Левая часть - Разделы заданий -->
+    <div class="sidebar">
+        <h4>Модули:</h4>
+        <ul id="taskList">
+            {% for module in tasks_json.modules %}  <!-- Обратите внимание на courses -->
+                <li><h3>{{ module.title }}</h3>
+                    <ul>
+                        {% for topic in tasks_json.topics %}
+                            <li>{{ topic }}</li>
+                        {% endfor %}
+                    </ul>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+
 
         <!-- Центральная часть - Python компилятор -->
         <div class="content">

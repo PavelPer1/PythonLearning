@@ -12,6 +12,7 @@ class Courses(models.Model):
     progress = models.CharField(max_length=50)
     author = models.CharField(max_length=50)
     language = models.CharField(max_length=30)
+    data = models.JSONField(default=dict, null=True)
 
     def __str__(self):
         return str(self.name)

@@ -1,3 +1,4 @@
+import os
 from sqlite3 import IntegrityError
 
 from django.shortcuts import render, get_object_or_404
@@ -5,6 +6,8 @@ from Courses.models import StudentCourser, Courses
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
+from PythonLearning import settings
+
 
 import json
 import traceback
@@ -97,13 +100,9 @@ def course_with_compiler(request, crs):
     course = get_object_or_404(Courses, name=crs)
     output = None
     code = ""
-    tasks = {
-        "task1": {"title": "Задание 1", "description": "Описание задания 1", "expected_output": "Hello World"},
-        "task2": {"title": "Задание 2", "description": "Описание задания 2", "expected_output": "Goodbye World"},
-        "task3": {"title": "Задание 3", "description": "Описание задания 3", "expected_output": "Hello Python"},
-        "task4": {"title": "Задание 4", "description": "Описание задания 4", "expected_output": "Welcome to Python"},
-    }
-    task_completed = False  # Переменная для проверки, выполнено ли задание
+    tasks = course.data
+
+    task_completed = False
 
     if request.method == "POST":
         code = request.POST.get('codearea', '')
@@ -113,15 +112,13 @@ def course_with_compiler(request, crs):
 
         output = execute_code_safely(code)
         task_id = request.POST.get('task_id', '')
-        if task_id and tasks.get(task_id) and output.strip() == tasks[task_id]["expected_output"]:
-            task_completed = True
 
     context = {
         'courses': course,
         'output': output,
         'code': code,
-        'tasks_json': json.dumps(tasks),  # Передаем JSON с заданиями в шаблон
-        'task_completed': task_completed,  # Передаем статус выполнения задания
+        'tasks_json': tasks,  # Преобразуем в JSON-строку
+        'task_completed': task_completed,
     }
 
     return render(request, 'get_courses.html', context)
