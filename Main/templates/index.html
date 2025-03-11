@@ -216,7 +216,26 @@
     font-weight: normal;
 }
 
+.courses-list {
+          list-style: none;
+          padding: 0;
+      }
+      .courses-list li {
+          background: #f1f1f1;
+          margin: 10px 0;
+          padding: 10px;
+          border-radius: 5px;
+      }
+      .courses-list a {
+    display: block;
+    text-decoration: none; /* Убираем подчеркивание */
+    color: inherit; /* Сохраняем цвет текста */
+    transition: transform 0.3s; /* Плавный эффект подъема */
+}
 
+.courses-list a:hover {
+    transform: translateY(-5px); /* Поднимаем элемент при наведении */
+}
     </style>
 </head>
 <body>
@@ -246,10 +265,12 @@
             <img src="https://img.icons8.com/?size=50&id=12438&format=png" alt="Аватар пользователя" class="profile__avatar" />
             <p><strong>{{ user.username }}</strong></p>
         </div>
-        <div class="profile-content">
-            <a href="{% url 'profile' %}">Мой профиль</a>
-            <a href="{% url 'logout' %}" style="background: #dc3545;">Выйти</a>
-        </div>
+        <div class="courses-list">
+        <a href="{% url 'profile' %}"><li><img src="https://img.icons8.com/?size=50&id=12438&format=png">Мой профиль</li></a>
+        <a href="{% url 'profile' %}"><li><img src="https://img.icons8.com/?size=50&id=364&format=png"> Настройки</li></a>
+        <a href="{% url 'profile' %}"><li><img src="https://img.icons8.com/?size=50&id=646&format=png"> Помощь</li></a>
+        <a href="{% url 'logout' %}" ><li style="background: #dc3545;"><img src="https://img.icons8.com/?size=50&id=2445&format=png"> Выйти</li></a>
+    </div>
     </div>
 
     <script>
