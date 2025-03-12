@@ -214,6 +214,7 @@
             border: 1px solid #f5c6cb;
         }
 
+
     </style>
 </head>
 <body>
@@ -279,7 +280,7 @@
                 </div>
                 <button type="submit" class="btn">Run</button>
 
-                
+
             </form>
 
             <div id="output">
@@ -287,13 +288,14 @@
                     <pre>{{ output }}</pre>
                 {% endif %}
             </div>
-            
+
         </div>
 
         <div class="description">
-        <h4>Условие задания</h4>
-        <h5 id="taskTitle">Выберите задание</h5>
-        <p id="taskDescription">Выберите задание</p>
+            <h4>Условие задания</h4>
+            <h5 id="taskTitle">Выберите задание</h5>
+            <p id="taskDescription"></p>
+            <p id="taskExample"></p>
         <div class="task-status">
             <p id="statusMessage" class="{% if task_completed %}completed{% else %}not-completed{% endif %}">
                 {% if task_completed %}
@@ -355,6 +357,7 @@
         const topicLinks = document.querySelectorAll('.topic-link');
         const taskTitleElement = document.getElementById('taskTitle');
         const taskDescriptionElement = document.getElementById('taskDescription');
+        const taskExampleElement = document.getElementById('taskExample'); // Добавляем элемент для примера
 
         topicLinks.forEach(link => {
             link.addEventListener('click', function(event) {
@@ -362,9 +365,11 @@
 
                 const title = this.getAttribute('data-title');
                 const description = this.getAttribute('data-description');
+                const example = this.getAttribute('data-example'); // Получаем пример
 
                 taskTitleElement.textContent = title;
                 taskDescriptionElement.textContent = description;
+                taskExampleElement.textContent = example; // Устанавливаем пример
             });
         });
     });
