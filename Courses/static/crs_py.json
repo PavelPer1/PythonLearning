@@ -7,12 +7,12 @@
       "topics": [
         {
           "title": "Установка Python",
-          "description": "Подробная инструкция по установке Python на различные операционные системы.",
-          "resources": ["https://python.org/downloads", "https://realpython.com/installing-python/"]
+          "description": "Подробная инструкция по установке Python на различные операционные системы. https://python.org/downloads https://realpython.com/installing-python/",
+          "example": ["https://python.org/downloads", "https://realpython.com/installing-python/"]
         },
         {
           "title": "Первый скрипт",
-          "description": "Написание и запуск вашего первого Python скрипта. Hello, world!",
+          "description": "Написание и запуск вашего первого Python скрипта. Hello, world! Традиционно, первой программой у нас будет hello world. Чтобы написать hello world на python, достаточно всего одной строки:",
           "example": "print('Hello, world!')"
         },
         {
