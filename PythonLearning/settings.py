@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/3.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
-
+import os
 from pathlib import Path
 import os
 
@@ -27,6 +27,8 @@ SECRET_KEY = 'django-insecure-pfg34#7k0k__n+%%=4yis#jjet!0o57*_jw9&_+6r=zg(gp*$n
 DEBUG = True
 
 ALLOWED_HOSTS = []
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 
 # Application definition

@@ -10,6 +10,7 @@ from .settings import *
 from Profile.forms import RegisterForm, CreateUserForm
 from Courses.models import Courses, StudentCourser
 
+
 @login_required
 def login_view(request):
     user = request.user  # Получаем текущего пользователя
