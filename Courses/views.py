@@ -1,6 +1,10 @@
 import os
 from sqlite3 import IntegrityError
 
+import json
+from django.http import JsonResponse
+from .forms import CourseForm
+
 from django.shortcuts import render, get_object_or_404
 from Courses.models import StudentCourser, Courses
 from django.http import HttpResponse
@@ -14,7 +18,8 @@ import traceback
 from io import StringIO
 from contextlib import redirect_stdout
 from Courses.models import Courses, StudentCourser
-from Profile.models import Student
+from Profile.models import Student, Teacher
+
 
 def my_courses_view(request):
     my_crs = []
@@ -170,3 +175,74 @@ def course_with_compiler(request, crs):
     }
 
     return render(request, 'get_courses.html', context)
+
+def render_create_course(request):
+    if request.method == 'POST':
+        # Соберите данные из формы
+        course_data = {
+            "title": request.POST.get('course_title'),
+            "description": request.POST.get('course_description'),
+            "modules": []
+        }
+
+        module_count = 1
+        while True:
+            module_title = request.POST.get(f'module_title_{module_count}')
+            if not module_title:
+                break  # Прекратите, если модуль не найден
+
+            module_description = request.POST.get(f'module_description_{module_count}')
+            module = {
+                "title": module_title,
+                "description": module_description,
+                "topics": []
+            }
+
+            section_count = 1
+            while True:
+                section_title = request.POST.get(f'section_title_{module_count}_{section_count}')
+                if not section_title:
+                    break  # Прекратите, если раздел не найден
+
+                section_description = request.POST.get(f'section_description_{module_count}_{section_count}')
+                task_title = request.POST.get(f'task_title_{module_count}_{section_count}')
+                task_description = request.POST.get(f'task_description_{module_count}_{section_count}')
+
+                topic = {
+                    "title": task_title,
+                    "description": task_description,
+                    "example": [],  # Добавьте логику для примеров, если нужно
+                    "answer": ""  # Добавьте логику для ответов, если нужно
+                }
+
+                module["topics"].append(topic)
+                section_count += 1
+
+            course_data["modules"].append(module)
+            module_count += 1
+
+        # Сохраните данные в JSON файл
+        with open('course_data.json', 'w', encoding='utf-8') as json_file:
+            json.dump(course_data, json_file, ensure_ascii=False, indent=4)
+
+
+        for i in Teacher.objects.all():
+            if i.name == request.user:
+                teacher = i
+
+        if teacher is None:
+            return JsonResponse({"error": "Учитель не найден."}, status=404)  # Получите учителя по имени пользователя
+
+        course = Courses(
+            teacher=teacher,
+            name=course_data["title"],
+            progress="0%",  # Укажите начальный прогресс
+            author=teacher,  # Укажите имя автора
+            language=course_data["title"],  # Укажите язык курса
+            data=course_data  # Сохраните данные курса в формате JSON
+        )
+        course.save()
+
+    return render(request, 'create_courses.html')
+
+

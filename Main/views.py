@@ -5,6 +5,16 @@ from django.contrib.auth.views import LoginView
 
 from django.shortcuts import render, redirect
 
+from Profile.models import Teacher
+
 
 def render_main_title(request):
-    return render(request, 'index.html')
+    teach = False
+
+    if request.user.is_authenticated:
+        teach = Teacher.objects.filter(name=request.user).exists()
+
+    context = {
+        'teacher':teach
+    }
+    return render(request, 'index.html', context=context)
