@@ -1,6 +1,10 @@
 import os
 from sqlite3 import IntegrityError
 
+import json
+from django.http import JsonResponse
+from .forms import CourseForm
+
 from django.shortcuts import render, get_object_or_404
 from Courses.models import StudentCourser, Courses
 from django.http import HttpResponse
@@ -14,9 +18,8 @@ import traceback
 from io import StringIO
 from contextlib import redirect_stdout
 from Courses.models import Courses, StudentCourser, CompletedTask
-from Profile.models import Student
+from Profile.models import Student, Teacher
 from django.http import JsonResponse
-
 
 @csrf_exempt
 @login_required
@@ -52,7 +55,6 @@ def get_progress(request, course_id):
 
     completed_tasks = CompletedTask.objects.filter(student=student, course_id=course_id).values_list("task_id", flat=True)
     return JsonResponse({"completed_tasks": list(completed_tasks)}, status=200)
-
 
 def my_courses_view(request):
     my_crs = []
@@ -175,7 +177,6 @@ def course_with_compiler(request, crs):
     task_completed = False
 
     if request.method == "POST":
-        task_completed = False
         code = request.POST.get('codearea', '')
         task_id = request.POST.get('task_id', '')
 
@@ -186,22 +187,19 @@ def course_with_compiler(request, crs):
 
         # Получаем правильный ответ для текущей задачи
         correct_answer = None
-        for module in tasks['modules']:  # Используем доступ по ключу
-            for topic in module['topics']:
-                # Используем доступ по ключу
-                if topic['title'] == task_id:# Предполагаем, что task_id соответствует заголовку темы
-                    correct_answer = topic.get('answer')
-                    break
+        for module in tasks['modules']:
+            for section in module['sections']:  # Изменено на 'sections'
+                for task in section['tasks']:  # Изменено на 'tasks'
+                    if task['title'] == task_id:  # Предполагаем, что task_id соответствует заголовку задания
+                        correct_answer = task.get('answer')
+                        break
 
         # Проверяем, совпадает ли вывод с правильным ответом
-
-        if correct_answer is not None:# Проверяем, что correct_answer не None
+        if correct_answer is not None:
             if output.strip() == correct_answer.strip():
                 task_completed = True
-
         else:
             print(f"Правильный ответ не найден для task_id: {task_id}")
-
 
     context = {
         'courses': course,
@@ -212,3 +210,87 @@ def course_with_compiler(request, crs):
     }
 
     return render(request, 'get_courses.html', context)
+
+
+def render_create_course(request):
+    if request.method == 'POST':
+        # Соберите данные из формы
+        course_data = {
+            "title": request.POST.get('course_title'),
+            "description": request.POST.get('course_description'),
+            "modules": []
+        }
+
+        module_count = 1
+        while True:
+            module_title = request.POST.get(f'module_title_{module_count}')
+            if not module_title:
+                break  # Прекратите, если модуль не найден
+
+            module_description = request.POST.get(f'module_description_{module_count}')
+            module = {
+                "title": module_title,
+                "description": module_description,
+                "sections": []  # Изменено на "sections"
+            }
+
+            section_count = 1
+            while True:
+                section_title = request.POST.get(f'section_title_{module_count}_{section_count}')
+                if not section_title:
+                    break  # Прекратите, если раздел не найден
+
+                section_description = request.POST.get(f'section_description_{module_count}_{section_count}')
+                section = {
+                    "title": section_title,
+                    "description": section_description,
+                    "tasks": []  # Изменено на "tasks"
+                }
+
+                task_count = 1
+                while True:
+                    task_title = request.POST.get(f'task_title_{module_count}_{section_count}_{task_count}')
+                    if not task_title:
+                        break  # Прекратите, если задание не найдено
+
+                    task_description = request.POST.get(f'task_description_{module_count}_{section_count}_{task_count}')
+                    task_answer = request.POST.get(f'task_answer_{module_count}_{section_count}_{task_count}')
+
+                    task = {
+                        "title": task_title,
+                        "description": task_description,
+                        "answer": task_answer  # Добавлено поле для ответа
+                    }
+
+                    section["tasks"].append(task)  # Добавляем задание в раздел
+                    task_count += 1
+
+                module["sections"].append(section)  # Добавляем раздел в модуль
+                section_count += 1
+
+            course_data["modules"].append(module)  # Добавляем модуль в курс
+            module_count += 1
+
+        # Сохраните данные в JSON файл
+        with open('course_data.json', 'w', encoding='utf-8') as json_file:
+            json.dump(course_data, json_file, ensure_ascii=False, indent=4)
+
+        # Получите учителя по имени пользователя
+        teacher = Teacher.objects.filter(name=request.user).first()
+        if teacher is None:
+            return JsonResponse({"error": "Учитель не найден."}, status=404)
+
+        # Создайте курс
+        course = Courses(
+            teacher=teacher,
+            name=course_data["title"],
+            progress="0%",  # Укажите начальный прогресс
+            author=teacher,  # Укажите имя автора
+            language=course_data["title"],  # Укажите язык курса
+            data=course_data  # Сохраните данные курса в формате JSON
+        )
+        course.save()
+
+    return render(request, 'create_courses.html')
+
+

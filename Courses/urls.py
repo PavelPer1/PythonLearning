@@ -11,6 +11,7 @@ urlpatterns = [
     path('<int:course_id>/', course_detail, name='course_detail'),  
     path("save-progress/", save_progress, name="save_progress"),
     path("get-progress/<int:course_id>/", get_progress, name="get_progress"),
+    path('main/create_course', render_create_course, name='create_course')
 ]
 
 if settings.DEBUG:

@@ -40,7 +40,7 @@ class RegisterUser(CreateView):
     def form_valid(self, form):
         user = form.save()
 
-        if self.request.POST.get('pointer') == 'Teacher':
+        if self.request.POST.get('pointer') == 'teacher':
             a = Teacher(name=user)
             a.save()
         else:
