@@ -309,7 +309,7 @@
 
             <div id="output">
                 {% if output %}
-                    <pre>{{ output }}</pre>
+                    <pre id="taskOutput">{{ output }}</pre>
                 {% endif %}
             </div>
 
@@ -330,71 +330,96 @@
             </p>
             </div>
         </div>
-
-    <script>
-        // Загружаем переданный JSON в JavaScript
-        const tasks = JSON.parse('{{ tasks_json|escapejs }}');
-
-        document.addEventListener('DOMContentLoaded', function () {
-            const taskLinks = document.querySelectorAll('.sidebar a');
-            const description = document.getElementById('taskDescription');
-            const statusMessage = document.getElementById('statusMessage');
-
-            taskLinks.forEach(function (link) {
-                link.addEventListener('click', function (e) {
-                    e.preventDefault();
-                    const taskId = link.getAttribute('data-task');
-                    description.textContent = tasks[taskId]?.description || 'Описание не найдено';
-
-                    // Изменяем статус задания
-                    statusMessage.textContent = 'Задание не выполнено';
-                    statusMessage.classList.remove('completed');
-                    statusMessage.classList.add('not-completed');
-                });
-            });
-        });
-    </script>
     </div>
 
-    <script>
-        var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
-            lineNumbers: true,
-            mode: "python",
-            indentUnit: 4,
-            theme: "default",
-            extraKeys: { Tab: "indentMore", "Shift-Tab": "indentLess" }
-        });
-    </script>
-    <script>
-        function toggleProfile() {
-            const profileDropdown = document.getElementById("profileDropdown");
-            profileDropdown.classList.toggle("active");
-        }
-        function closeProfile() {
-    const profileDropdown = document.getElementById("profileDropdown");
-    profileDropdown.classList.remove("active");
-}
-
-    </script>
 <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const taskLinks = document.querySelectorAll('.sidebar a');
+        const description = document.getElementById('taskDescription');
+        const statusMessage = document.getElementById('statusMessage');
+
+        taskLinks.forEach(function (link) {
+            link.addEventListener('click', function (e) {
+                e.preventDefault();
+                const taskId = link.getAttribute('data-title');
+                description.textContent = tasks.modules.find(module =>
+                    module.topics.some(topic => topic.title === taskId)
+                )?.topics.find(topic => topic.title === taskId)?.description || 'Описание не найдено';
+                // Сбрасываем статус предыдущего задания на "не выполнено"
+                statusMessage.textContent = 'Задание не выполнено';
+                statusMessage.classList.remove('completed');
+                statusMessage.classList.add('not-completed');
+                // Проверяем, завершено ли текущее задание
+                if (completedTasks[taskId]) {
+                    statusMessage.textContent = 'Задание завершено';
+                    statusMessage.classList.remove('not-completed');
+                    statusMessage.classList.add('completed');
+                }
+            });
+        });
+    });
+</script>
+<script>
+    var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
+        lineNumbers: true,
+        mode: "python",
+        indentUnit: 4,
+        theme: "default",
+        extraKeys: { Tab: "indentMore", "Shift-Tab": "indentLess" }
+    });
+</script>
+<script>
+    function toggleProfile() {
+        const profileDropdown = document.getElementById("profileDropdown");
+        profileDropdown.classList.toggle("active");
+    }
+    function closeProfile() {
+        const profileDropdown = document.getElementById("profileDropdown");
+        profileDropdown.classList.remove("active");
+
+    }
+
+</script>
+<script>
+
     document.addEventListener('DOMContentLoaded', function() {
         const topicLinks = document.querySelectorAll('.topic-link');
         const taskTitleElement = document.getElementById('taskTitle');
         const taskDescriptionElement = document.getElementById('taskDescription');
-        const taskExampleElement = document.getElementById('taskExample'); // Добавляем элемент для примера
+        const taskExampleElement = document.getElementById('taskExample');
+        const form = document.querySelector('form');
 
+        let currentTaskId = '';
         topicLinks.forEach(link => {
             link.addEventListener('click', function(event) {
                 event.preventDefault(); // Предотвращаем переход по ссылке
-
                 const title = this.getAttribute('data-title');
                 const description = this.getAttribute('data-description');
                 const example = this.getAttribute('data-example'); // Получаем пример
-
                 taskTitleElement.textContent = title;
                 taskDescriptionElement.textContent = description;
                 taskExampleElement.textContent = example; // Устанавливаем пример
+                // Сохраняем текущий task_id
+                currentTaskId = title; // Предполагаем, что title уникален и соответствует task_id
             });
+        });
+        // Добавляем обработчик события на форму
+        form.addEventListener('submit', function(event) {
+            // Проверяем, установлен ли currentTaskId
+            if (!currentTaskId) {
+                event.preventDefault(); // Предотвращаем отправку формы, если task_id не установлен
+                alert("Пожалуйста, выберите задание перед отправкой.");
+                return;
+            }
+            // Добавляем скрытое поле с task
+            // Добавляем скрытое поле с task_id
+            const hiddenInput = document.createElement('input');
+            hiddenInput.type = 'hidden';
+            hiddenInput.name = 'task_id';
+            hiddenInput.value = currentTaskId;
+            form.appendChild(hiddenInput);
+            // Вызываем функцию для отметки задания как завершенного
+            markTaskAsCompleted(currentTaskId);
         });
     });
 </script>

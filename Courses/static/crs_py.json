@@ -13,12 +13,14 @@
         {
           "title": "Первый скрипт",
           "description": "Написание и запуск вашего первого Python скрипта. Hello, world! Традиционно, первой программой у нас будет hello world. Чтобы написать hello world на python, достаточно всего одной строки:",
-          "example": "print('Hello, world!')"
+          "example": "print('Hello world!')",
+          "answer": "Hello world!"
         },
         {
           "title": "Переменные и типы данных",
-          "description": "Изучение основных типов данных в Python: int, float, str, bool.",
-          "example": "x = 10\ny = 'Hello'\nprint(type(x))\nprint(type(y))"
+          "description": "Изучение основных типов данных в Python: int, float, str, bool. Объявите переменную типа int и проверьте ее тип",
+          "example": "x = 10\ny = 'Hello'\nprint(type(x))\nprint(type(y))",
+          "answer": "<class 'int'>"
         },
         {
           "title": "Операторы",

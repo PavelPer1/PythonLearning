@@ -96,6 +96,7 @@ def execute_code_safely(code):
                 'dict': dict,
                 'list': list,
                 'tuple': tuple,
+                'type': type
             },
             '__name__': '__main__',
         }
@@ -127,13 +128,33 @@ def course_with_compiler(request, crs):
     task_completed = False
 
     if request.method == "POST":
+        task_completed = False
         code = request.POST.get('codearea', '')
+        task_id = request.POST.get('task_id', '')
 
         if len(code) > 1000:
             return HttpResponse("Code is too long", status=400)
 
         output = execute_code_safely(code)
-        task_id = request.POST.get('task_id', '')
+
+        # Получаем правильный ответ для текущей задачи
+        correct_answer = None
+        for module in tasks['modules']:  # Используем доступ по ключу
+            for topic in module['topics']:
+                # Используем доступ по ключу
+                if topic['title'] == task_id:# Предполагаем, что task_id соответствует заголовку темы
+                    correct_answer = topic.get('answer')
+                    break
+
+        # Проверяем, совпадает ли вывод с правильным ответом
+
+        if correct_answer is not None:# Проверяем, что correct_answer не None
+            if output.strip() == correct_answer.strip():
+                task_completed = True
+
+        else:
+            print(f"Правильный ответ не найден для task_id: {task_id}")
+
 
     context = {
         'courses': course,
