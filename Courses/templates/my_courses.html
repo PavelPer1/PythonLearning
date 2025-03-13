@@ -186,6 +186,48 @@
 .courses-list a:hover {
     transform: translateY(-5px); /* Поднимаем элемент при наведении */
 }
+.course-cover-link {
+    display: block;
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+.course-cover-link:hover img {
+    opacity: 0.8;  /* Уменьшение прозрачности изображения при наведении */
+}
+
+.course-cover {
+    border-radius: 10px;
+    transition: opacity 0.3s ease;
+}
+.tech-icons {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+        .icon {
+            position: absolute;
+            width: 80px;
+            opacity: 0.5;
+            animation: float 6s infinite ease-in-out;
+        }
+        .python { top: 10%; left: 5%; }
+        .django { top: 50%; left: 80%; }
+        .js { top: 80%; left: 35%; }
+        .html { top: 10%; left: 90%; }
+        .css { top: 50%; left: 15%; }
+        .postgresql { top: 80%; left: 60%; }
+
+        @keyframes float {
+            0% { transform: translateY(0); }
+            50% { transform: translateY(30px); }
+            100% { transform: translateY(0); }
+        }
     </style>
 </head>
 <body>
@@ -222,24 +264,42 @@
     </div>
     </div>
     <div class="container">
-        <h1 class="my-4">Курсы, на которые подписан</h1>
-        <div class="row">
-            {% for course in my_crs %}
-                <div class="col-md-4 mb-4">
-                    <div class="course-card p-3">
-                        <h3><a href="{% url 'course_detail' course.id %}" class="course-title">{{ course.name }}</a></h3>
-                        <p><strong>Автор:</strong> {{ course.author }}</p>
-                        <p><strong>Преподаватель:</strong> {{ course.teacher }}</p>
-                        <p><strong>Язык:</strong> {{ course.language }}</p>
-                        <p><strong>Прогресс:</strong> {{ course.progress }}%</p>
-                        <a href="{% url 'course_with_compiler' course.name %}" class="btn btn-secondary mt-3">Перейти</a>
-                    </div>
+    <h1 class="my-4">Курсы, на которые подписан</h1>
+    <div class="row">
+        {% for course in my_crs %}
+            <div class="col-md-4 mb-4">
+                <div class="course-card p-3">
+                    {% if course.image %}
+                        <a href="{% url 'course_detail' course.id %}" class="course-cover-link">
+                            <img src="{{ course.image.url }}" alt="{{ course.name }}" class="course-cover" style="width: 100%; height: 200px; object-fit: contain; border-radius: 10px;">
+                        </a>
+                    {% else %}
+                        <div class="d-flex align-items-center justify-content-center bg-light" style="width: 100%; height: 200px; border-radius: 10px;">
+                            <p class="text-muted">Нет обложки</p>
+                        </div>
+                    {% endif %}
+                    
+                    <h3><a href="{% url 'course_detail' course.id %}" class="course-title">{{ course.name }}</a></h3>
+                    <p><strong>Автор:</strong> {{ course.author }}</p>
+                    <p><strong>Язык:</strong> {{ course.language }}</p>
+                    <p><strong>Прогресс:</strong> {{ course.progress }}%</p>
+                    <a href="{% url 'course_with_compiler' course.name %}" class="btn btn-secondary mt-3">Перейти</a>
                 </div>
-            {% empty %}
-                <p>Вы еще не подписаны ни на один курс.</p>
-            {% endfor %}
-        </div>
+            </div>
+        {% empty %}
+            <p>Вы еще не подписаны ни на один курс.</p>
+        {% endfor %}
     </div>
+</div>
+<div class="tech-icons">
+        <img src="https://img.icons8.com/?size=48&id=13441&format=png" class="icon python">
+        <img src="https://img.icons8.com/?size=50&id=XPdRFanRZtNK&format=png" class="icon django">
+        <img src="https://img.icons8.com/?size=80&id=6eTRpgF0TFTj&format=png" class="icon js">
+        <img src="https://img.icons8.com/?size=50&id=1043&format=png" class="icon html">
+        <img src="https://img.icons8.com/?size=50&id=1045&format=png" class="icon css">
+        <img src="https://img.icons8.com/?size=80&id=eJCmZxqMUnt8&format=png" class="icon postgresql">
+    </div>
+
     <script>
         function toggleProfile() {
             const profileDropdown = document.getElementById("profileDropdown");

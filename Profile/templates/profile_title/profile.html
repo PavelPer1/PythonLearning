@@ -257,6 +257,7 @@
     transition: background-color 0.3s, color 0.3s;  /* Плавное изменение */
 }
 .recommended-course-container {
+    align-items: stretch; /* Растягивает элементы по высоте */
     display: flex;
     flex-wrap: wrap; /* Перенос элементов на новую строку */
     gap: 20px;  /* Устанавливаем минимальный интервал между кнопками */
@@ -296,6 +297,70 @@
 .profile-button{
     color: black;
     background: white;
+}
+.course-link {
+    text-decoration: none;
+    color: inherit;
+}
+
+.recommended-course {
+      width: 200px; /* Уменьшаем ширину */
+    min-height: 180px;
+    border: 1px solid #ddd;
+    padding: 15px;
+    border-radius: 10px;
+    text-align: center;
+    transition: transform 0.3s ease-in-out;
+    background: #fff;
+}
+
+.recommended-course:hover {
+    transform: scale(1.05);
+}
+
+.course-cover {
+    width: 100%;
+    height: 150px; /* Одинаковая высота изображений */
+     object-fit: contain;
+    border-radius: 10px;
+    margin-bottom: 10px;
+}
+
+.no-cover {
+    width: 100%;
+    height: 150px;
+    background: #f0f0f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #777;
+    border-radius: 10px;
+}
+
+.progress {
+    width: 90%; /* Ширина шкалы относительно кнопки */
+    height: 8px;
+    background: #e0e0e0;
+    border-radius: 5px;
+    margin: 5px auto; /* Центрируем по горизонтали */
+}
+.progress-bar {
+    height: 100%;
+    background: #28a745;
+}
+.recommended-course h4 {
+    font-size: 16px;
+    white-space: nowrap; /* Текст не будет переноситься на новую строку */
+    overflow: hidden; /* Обрезает текст, если он выходит за пределы */
+    text-overflow: ellipsis; /* Добавляет многоточие, если текст слишком длинный */
+    margin: 10px 0;
+}
+.recommended-course p {
+    font-size: 16px;
+    white-space: nowrap; /* Текст не будет переноситься на новую строку */
+    overflow: hidden; /* Обрезает текст, если он выходит за пределы */
+    text-overflow: ellipsis; /* Добавляет многоточие, если текст слишком длинный */
+    margin: 10px 0;
 }
         
     </style>
@@ -372,37 +437,50 @@
         </form>
       </aside>
       <main class="content">
-        <h2>Моё обучение</h2>
-<div class="recommended-course-container">
-    {% for course in courses %}
-    <a href="{% url 'course_with_compiler' course.name %}">
-        <div class="recommended-course">
-                {{ course.name }}
-            <div class="progress">
-                <div class="progress-bar" style="width: {{ course.progress }}%">
-                    
+    <h2>Моё обучение</h2>
+    <div class="recommended-course-container">
+        {% for course in courses %}
+        <a href="{% url 'course_with_compiler' course.name %}" class="course-link">
+            <div class="recommended-course">
+                {% if course.image %}
+                    <img src="{{ course.image.url }}" alt="{{ course.name }}" class="course-cover">
+                {% else %}
+                    <div class="no-cover">Нет обложки</div>
+                {% endif %}
+                <h4>{{ course.name }}</h4>
+                <div class="progress">
+                    <div class="progress-bar" style="width: {{ course.progress }}%"></div>
                 </div>
+                <p>{{ course.progress }}%</p>
             </div>
-            {{ course.progress }}%
-        </div>
-    </a>
-    {% empty %}
-        <p>Вы ещё не начали обучение.</p>
-    {% endfor %}
-</div>
-        <div class="recommended">
-          <h3>Рекомендуемые курсы</h3>
-          <div class="recommended-course-container">
-            {% for course in courses %}
-              <a href="{% url 'course_with_compiler' course.name %}" class="recommended-course">{{ course.name }}
-              <p><strong>Автор:</strong> {{ course.author }}</p></a>
+        </a>
+        {% empty %}
+            <p>Вы ещё не начали обучение.</p>
+        {% endfor %}
+    </div>
 
+    <div class="recommended">
+        <h3>Рекомендуемые курсы</h3>
+        <div class="recommended-course-container">
+            {% for course in courses %}
+            <a href="{% url 'course_with_compiler' course.name %}" class="course-link">
+                <div class="recommended-course">
+                    {% if course.image %}
+                        <img src="{{ course.image.url }}" alt="{{ course.name }}" class="course-cover">
+                    {% else %}
+                        <div class="no-cover">Нет обложки</div>
+                    {% endif %}
+                    <h4>{{ course.name }}</h4>
+                    <p><strong>Автор:</strong> {{ course.author }}</p>
+                </div>
+            </a>
             {% empty %}
-              <p>Нет рекомендаций</p>
+                <p>Нет рекомендаций</p>
             {% endfor %}
-          </div>
         </div>
-      </main>
+    </div>
+</main>
+
     </div>
     <script>
         function toggleProfile() {

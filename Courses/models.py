@@ -13,6 +13,7 @@ class Courses(models.Model):
     author = models.CharField(max_length=50)
     language = models.CharField(max_length=30)
     data = models.JSONField(default=dict, null=True)
+    image = models.ImageField(upload_to='course_covers/', null=True, blank=True)
 
     def __str__(self):
         return str(self.name)
