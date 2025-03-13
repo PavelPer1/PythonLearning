@@ -305,8 +305,24 @@
                 {% endfor %}
             </div>
 
-            <!-- Кнопка назад -->
-            <a href="{% url 'course_list' %}" class="btn btn-secondary mt-3 w-100">Назад к списку</a>
+    
+            <form method="post" action="{% url 'course_list' %}">
+    {% csrf_token %}
+    <input type="hidden" name="course_id" value="{{ course.id }}">
+
+    <!-- Если курс в списке курсов пользователя -->
+    {% if course in my_crs %}
+        <!-- Кнопка "Перейти", если пользователь подписан на курс -->
+        <a href="{% url 'course_with_compiler' course.name %}" class="btn btn-secondary mt-3 w-100">Перейти</a>
+    {% else %}
+        <!-- Кнопка "Подписаться", если пользователь не подписан -->
+        <button type="submit" class="btn btn-secondary mt-3 w-100">Подписаться</button>
+    {% endif %}
+</form>
+
+<!-- Кнопка "Назад к списку" -->
+<a href="{% url 'course_list' %}" class="btn btn-secondary mt-3 w-100">Назад к списку</a>
+
         </div>
     </div>
 </div>

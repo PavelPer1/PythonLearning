@@ -10,12 +10,19 @@ from .settings import *
 from Profile.forms import RegisterForm, CreateUserForm
 from Courses.models import Courses, StudentCourser
 
-
 @login_required
 def login_view(request):
     user = request.user  # Получаем текущего пользователя
     courses = Courses.objects.all()
-    return render(request, 'profile_title/profile.html', {'user': user, 'courses': courses})
+    my_crs = []  # Список для курсов текущего пользователя
+    # Получаем студента, связанного с текущим пользователем
+    student = Student.objects.get(name=request.user)
+    
+    # Получаем все объекты StudentCourser, связанные с этим студентом
+    for student_course in StudentCourser.objects.filter(student=student):
+        my_crs.append(student_course.courses)  # Добавляем курс в список
+
+    return render(request, 'profile_title/profile.html', {'user': user, 'courses': courses, 'my_crs': my_crs})
 
 def logout_view(request):
     logout(request)

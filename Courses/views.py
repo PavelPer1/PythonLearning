@@ -113,11 +113,15 @@ def course_detail(request, course_id):
     course = get_object_or_404(Courses, id=course_id)  # Получаем курс по ID
     students_count = StudentCourser.objects.filter(courses=course).count()  # Количество учеников на курсе
     tasks_json = course.data  # Добавляем JSON-данные о модулях
-
+    my_crs = []
+    for i in StudentCourser.objects.all():
+        if i.student.name == request.user:
+            my_crs.append(i.courses)
     return render(request, 'course_detail.html', {
         'course': course,
         'students_count': students_count,
-        'tasks_json': tasks_json  # Передаем модули на страницу
+        'tasks_json': tasks_json,
+        'my_crs': my_crs  # Передаем модули на страницу
     })
 
 
