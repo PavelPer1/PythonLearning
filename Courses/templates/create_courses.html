@@ -6,91 +6,161 @@
 </head>
 <body>
     <header>
-    <h1>Создание курса</h1>
-</header>
+        <h1>Создание курса</h1>
+    </header>
 
-<main>
-    <form action="{% url 'create_course' %}" method="POST">
-        {% csrf_token %}
-        <label for="course_title">Название курса:</label>
-        <input type="text" id="course_title" name="course_title" required>
+    <main>
+        <form action="{% url 'create_course' %}" method="POST">
+            {% csrf_token %}
+            <label for="course_title">Название курса:</label>
+            <input type="text" id="course_title" name="course_title" required>
 
-        <label for="course_description">Описание курса:</label>
-        <textarea id="course_description" name="course_description" required></textarea>
+            <label for="course_description">Описание курса:</label>
+            <textarea id="course_description" name="course_description" required></textarea>
 
-        <section>
-            <h2>Модули</h2>
-            <div id="modules">
+            <section>
+                <h2>Модули</h2>
+                <div id="modules">
+                    <div class="module">
+                        <h3>Модуль 1</h3>
+                        <label for="module_title_1">Название модуля:</label>
+                        <input type="text" id="module_title_1" name="module_title_1" required>
+
+                        <label for="module_description_1">Описание модуля:</label>
+                        <textarea id="module_description_1" name="module_description_1" required></textarea>
+
+                        <h4>Разделы</h4>
+                        <div class="sections" id="sections_1">
+                            <div class="section">
+                                <h5>Раздел 1.1</h5>
+                                <label for="section_title_1_1">Название раздела:</label>
+                                <input type="text" id="section_title_1_1" name="section_title_1_1" required>
+
+                                <label for="section_description_1_1">Описание раздела:</label>
+                                <textarea id="section_description_1_1" name="section_description_1_1" required></textarea>
+
+                                <h6>Задания</h6>
+                                <div class="tasks" id="tasks_1_1">
+                                    <div class="task">
+                                        <label for="task_title_1_1_1">Название задания:</label>
+                                        <input type="text" id="task_title_1_1_1" name="task_title_1_1_1" required>
+
+                                        <label for="task_description_1_1_1">Описание задания:</label>
+                                        <textarea id="task_description_1_1_1" name="task_description_1_1_1" required></textarea>
+
+                                        <label for="task_answer_1_1_1">Ответ:</label>
+                                        <input type="text" id="task_answer_1_1_1" name="task_answer_1_1_1" required>
+                                    </div>
+                                </div>
+                                <button type="button" onclick="addTask(1, 1)">Добавить задание</button>
+                            </div>
+                        </div>
+                        <button type="button" onclick="addSection(1)">Добавить раздел</button>
+                    </div>
+                </div>
+            </section>
+
+            <button type="button" onclick="addModule()">Добавить модуль</button>
+            <button type="submit">Создать курс</button>
+        </form>
+    </main>
+
+    <script>
+        let moduleCount = 1;
+
+        function addModule() {
+            moduleCount++;
+            const modulesDiv = document.getElementById('modules');
+            const newModule = `
                 <div class="module">
-                    <h3>Модуль 1</h3>
-                    <label for="module_title_1">Название модуля:</label>
-                    <input type="text" id="module_title_1" name="module_title_1" required>
+                    <h3>Модуль ${moduleCount}</h3>
+                    <label for="module_title_${moduleCount}">Название модуля:</label>
+                    <input type="text" id="module_title_${moduleCount}" name="module_title_${moduleCount}" required>
 
-                    <label for="module_description_1">Описание модуля:</label>
-                    <textarea id="module_description_1" name="module_description_1" required></textarea>
+                    <label for="module_description_${moduleCount}">Описание модуля:</label>
+                    <textarea id="module_description_${moduleCount}" name="module_description_${moduleCount}" required></textarea>
 
                     <h4>Разделы</h4>
-                    <div class="sections">
+                    <div class="sections" id="sections_${moduleCount}">
                         <div class="section">
-                            <h5>Раздел 1.1</h5>
-                            <label for="section_title_1_1">Название раздела:</label>
-                            <input type="text" id="section_title_1_1" name="section_title_1_1" required>
+                            <h5>Раздел ${moduleCount}.1</h5>
+                            <label for="section_title_${moduleCount}_1">Название раздела:</label>
+                            <input type="text" id="section_title_${moduleCount}_1" name="section_title_${moduleCount}_1" required>
 
-                            <label for="section_description_1_1">Описание раздела:</label>
-                            <textarea id="section_description_1_1" name="section_description_1_1" required></textarea>
+                            <label for="section_description_${moduleCount}_1">Описание раздела:</label>
+                            <textarea id="section_description_${moduleCount}_1" name="section_description_${moduleCount}_1" required></textarea>
 
                             <h6>Задания</h6>
-                            <label for="task_title_1_1">Название задания:</label>
-                            <input type="text" id="task_title_1_1" name="task_title_1_1" required>
+                            <div class="tasks" id="tasks_${moduleCount}_1">
+                                <div class="task">
+                                    <label for="task_title_${moduleCount}_1_1">Название задания:</label>
+                                    <input type="text" id="task_title_${moduleCount}_1_1" name="task_title_${moduleCount}_1_1" required>
 
-                            <label for="task_description_1_1">Описание задания:</label>
-                            <textarea id="task_description_1_1" name="task_description_1_1" required></textarea>
+                                    <label for="task_description_${moduleCount}_1_1">Описание задания:</label>
+                                    <textarea id="task_description_${moduleCount}_1_1" name="task_description_${moduleCount}_1_1" required></textarea>
+
+                                    <label for="task_answer_${moduleCount}_1_1">Ответ:</label>
+                                    <input type="text" id="task_answer_${moduleCount}_1_1" name="task_answer_${moduleCount}_1_1" required>
+                                </div>
+                            </div>
+                            <button type="button" onclick="addTask(${moduleCount}, 1)">Добавить задание</button>
                         </div>
                     </div>
+                    <button type="button" onclick="addSection(${moduleCount})">Добавить раздел</button>
                 </div>
-            </div>
-        </section>
+            `;
+            modulesDiv.insertAdjacentHTML('beforeend', newModule);
+        }
 
-        <button type="button" onclick="addModule()">Добавить модуль</button>
-        <button type="submit">Создать курс</button>
-    </form>
-</main>
+        function addSection(moduleId) {
+            const sectionCount = document.querySelectorAll(`#sections_${moduleId} .section`).length + 1;
+            const sectionsDiv = document.getElementById(`sections_${moduleId}`);
+            const newSection = `
+                <div class="section">
+                    <h5>Раздел ${moduleId}.${sectionCount}</h5>
+                    <label for="section_title_${moduleId}_${sectionCount}">Название раздела:</label>
+                    <input type="text" id="section_title_${moduleId}_${sectionCount}" name="section_title_${moduleId}_${sectionCount}" required>
 
-<script>
-    function addModule() {
-        const moduleCount = document.querySelectorAll('.module').length + 1;
-        const modulesDiv = document.getElementById('modules');
-        const newModule = `
-            <div class="module">
-                <h3>Модуль ${moduleCount}</h3>
-                <label for="module_title_${moduleCount}">Название модуля:</label>
-                <input type="text" id="module_title_${moduleCount}" name="module_title_${moduleCount}" required>
+                    <label for="section_description_${moduleId}_${sectionCount}">Описание раздела:</label>
+                    <textarea id="section_description_${moduleId}_${sectionCount}" name="section_description_${moduleId}_${
+                    sectionCount}" required></textarea>
 
-                <label for="module_description_${moduleCount}">Описание модуля:</label>
-                <textarea id="module_description_${moduleCount}" name="module_description_${moduleCount}" required></textarea>
+                    <h6>Задания</h6>
+                    <div class="tasks" id="tasks_${moduleId}_${sectionCount}">
+                        <div class="task">
+                            <label for="task_title_${moduleId}_${sectionCount}_1">Название задания:</label>
+                            <input type="text" id="task_title_${moduleId}_${sectionCount}_1" name="task_title_${moduleId}_${sectionCount}_1" required>
 
-                <h4>Разделы</h4>
-                <div class="sections">
-                    <div class="section">
-                        <h5>Раздел ${moduleCount}.1</h5>
-                        <label for="section_title_${moduleCount}_1">Название раздела:</label>
-                        <input type="text" id="section_title_${moduleCount}_1" name="section_title_${moduleCount}_1" required>
+                            <label for="task_description_${moduleId}_${sectionCount}_1">Описание задания:</label>
+                            <textarea id="task_description_${moduleId}_${sectionCount}_1" name="task_description_${moduleId}_${sectionCount}_1" required></textarea>
 
-                        <label for="section_description_${moduleCount}_1">Описание раздела:</label>
-                        <textarea id="section_description_${moduleCount}_1" name="section_description_${moduleCount}_1" required></textarea>
-
-                        <h6>Задания</h6>
-                        <label for="task_title_${moduleCount}_1">Название задания:</label>
-                        <input type="text" id="task_title_${moduleCount}_1" name="task_title_${moduleCount}_1" required>
-
-                        <label for="task_description_${moduleCount}_1">Описание задания:</label>
-                        <textarea id="task_description_${moduleCount}_1" name="task_description_${moduleCount}_1" required></textarea>
+                            <label for="task_answer_${moduleId}_${sectionCount}_1">Ответ:</label>
+                            <input type="text" id="task_answer_${moduleId}_${sectionCount}_1" name="task_answer_${moduleId}_${sectionCount}_1" required>
+                        </div>
                     </div>
+                    <button type="button" onclick="addTask(${moduleId}, ${sectionCount})">Добавить задание</button>
                 </div>
-            </div>
-        `;
-        modulesDiv.insertAdjacentHTML('beforeend', newModule);
-    }
-</script>
+            `;
+            sectionsDiv.insertAdjacentHTML('beforeend', newSection);
+        }
+
+        function addTask(moduleId, sectionId) {
+            const taskCount = document.querySelectorAll(`#tasks_${moduleId}_${sectionId} .task`).length + 1;
+            const tasksDiv = document.getElementById(`tasks_${moduleId}_${sectionId}`);
+            const newTask = `
+                <div class="task">
+                    <label for="task_title_${moduleId}_${sectionId}_${taskCount}">Название задания:</label>
+                    <input type="text" id="task_title_${moduleId}_${sectionId}_${taskCount}" name="task_title_${moduleId}_${sectionId}_${taskCount}" required>
+
+                    <label for="task_description_${moduleId}_${sectionId}_${taskCount}">Описание задания:</label>
+                    <textarea id="task_description_${moduleId}_${sectionId}_${taskCount}" name="task_description_${moduleId}_${sectionId}_${taskCount}" required></textarea>
+
+                    <label for="task_answer_${moduleId}_${sectionId}_${taskCount}">Ответ:</label>
+                    <input type="text" id="task_answer_${moduleId}_${sectionId}_${taskCount}" name="task_answer_${moduleId}_${sectionId}_${taskCount}" required>
+                </div>
+            `;
+            tasksDiv.insertAdjacentHTML('beforeend', newTask);
+        }
+    </script>
 </body>
 </html>

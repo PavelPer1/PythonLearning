@@ -1,0 +1,17 @@
+{
+  "title": "Golang",
+  "description": "Golang для чайников",
+  "modules": [{
+    "title": "Введение в програмирование",
+    "description": "Это класс", "sections":
+    [{"title": "Первая программа", "description": "Опа",
+      "tasks": [{"title": "print('pasha')", "description": "dfvfvdfv", "answer": "pasha"}]},
+      {"title": "Вторая программа", "description": "чычычыч",
+        "tasks": [{"title": "print('danil')", "description": "asxsaxax", "answer": "danil"}]}]},
+    {"title": "asasxaxax",
+      "description": "asxxasx", "sections":
+    [{"title": "asxasxax", "description": "asxasx",
+      "tasks": [{"title": "print('мама')", "description": "asaxasx", "answer": "мама"}]}]
+    }
+  ]
+}

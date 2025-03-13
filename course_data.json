@@ -1,16 +1,32 @@
 {
-    "title": "rgeregerger",
-    "description": "ergergergeg",
+    "title": "Хуй",
+    "description": "йцзвлйбццчйч",
     "modules": [
         {
-            "title": "ergergerge",
-            "description": "ergergerg",
-            "topics": [
+            "title": "Пися",
+            "description": "ыфвффывфывыфв",
+            "sections": [
                 {
-                    "title": "ergergerg",
-                    "description": "ergergeg",
-                    "example": [],
-                    "answer": ""
+                    "title": "Гоп лэй",
+                    "description": "сфсфысфысфыс",
+                    "tasks": [
+                        {
+                            "title": "print('pasha1')",
+                            "description": "dcsdcsdc",
+                            "answer": "pasha1"
+                        }
+                    ]
+                },
+                {
+                    "title": "kalsdjaajsdllajsd",
+                    "description": "sdasajlndalsnda",
+                    "tasks": [
+                        {
+                            "title": "print('danil1')",
+                            "description": "sasxasx",
+                            "answer": "danil1"
+                        }
+                    ]
                 }
             ]
         }

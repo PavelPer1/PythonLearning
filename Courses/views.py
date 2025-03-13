@@ -138,7 +138,6 @@ def course_with_compiler(request, crs):
     task_completed = False
 
     if request.method == "POST":
-        task_completed = False
         code = request.POST.get('codearea', '')
         task_id = request.POST.get('task_id', '')
 
@@ -149,22 +148,19 @@ def course_with_compiler(request, crs):
 
         # Получаем правильный ответ для текущей задачи
         correct_answer = None
-        for module in tasks['modules']:  # Используем доступ по ключу
-            for topic in module['topics']:
-                # Используем доступ по ключу
-                if topic['title'] == task_id:# Предполагаем, что task_id соответствует заголовку темы
-                    correct_answer = topic.get('answer')
-                    break
+        for module in tasks['modules']:
+            for section in module['sections']:  # Изменено на 'sections'
+                for task in section['tasks']:  # Изменено на 'tasks'
+                    if task['title'] == task_id:  # Предполагаем, что task_id соответствует заголовку задания
+                        correct_answer = task.get('answer')
+                        break
 
         # Проверяем, совпадает ли вывод с правильным ответом
-
-        if correct_answer is not None:# Проверяем, что correct_answer не None
+        if correct_answer is not None:
             if output.strip() == correct_answer.strip():
                 task_completed = True
-
         else:
             print(f"Правильный ответ не найден для task_id: {task_id}")
-
 
     context = {
         'courses': course,
@@ -175,6 +171,7 @@ def course_with_compiler(request, crs):
     }
 
     return render(request, 'get_courses.html', context)
+
 
 def render_create_course(request):
     if request.method == 'POST':
@@ -195,7 +192,7 @@ def render_create_course(request):
             module = {
                 "title": module_title,
                 "description": module_description,
-                "topics": []
+                "sections": []  # Изменено на "sections"
             }
 
             section_count = 1
@@ -205,34 +202,46 @@ def render_create_course(request):
                     break  # Прекратите, если раздел не найден
 
                 section_description = request.POST.get(f'section_description_{module_count}_{section_count}')
-                task_title = request.POST.get(f'task_title_{module_count}_{section_count}')
-                task_description = request.POST.get(f'task_description_{module_count}_{section_count}')
-
-                topic = {
-                    "title": task_title,
-                    "description": task_description,
-                    "example": [],  # Добавьте логику для примеров, если нужно
-                    "answer": ""  # Добавьте логику для ответов, если нужно
+                section = {
+                    "title": section_title,
+                    "description": section_description,
+                    "tasks": []  # Изменено на "tasks"
                 }
 
-                module["topics"].append(topic)
+                task_count = 1
+                while True:
+                    task_title = request.POST.get(f'task_title_{module_count}_{section_count}_{task_count}')
+                    if not task_title:
+                        break  # Прекратите, если задание не найдено
+
+                    task_description = request.POST.get(f'task_description_{module_count}_{section_count}_{task_count}')
+                    task_answer = request.POST.get(f'task_answer_{module_count}_{section_count}_{task_count}')
+
+                    task = {
+                        "title": task_title,
+                        "description": task_description,
+                        "answer": task_answer  # Добавлено поле для ответа
+                    }
+
+                    section["tasks"].append(task)  # Добавляем задание в раздел
+                    task_count += 1
+
+                module["sections"].append(section)  # Добавляем раздел в модуль
                 section_count += 1
 
-            course_data["modules"].append(module)
+            course_data["modules"].append(module)  # Добавляем модуль в курс
             module_count += 1
 
         # Сохраните данные в JSON файл
         with open('course_data.json', 'w', encoding='utf-8') as json_file:
             json.dump(course_data, json_file, ensure_ascii=False, indent=4)
 
-
-        for i in Teacher.objects.all():
-            if i.name == request.user:
-                teacher = i
-
+        # Получите учителя по имени пользователя
+        teacher = Teacher.objects.filter(name=request.user).first()
         if teacher is None:
-            return JsonResponse({"error": "Учитель не найден."}, status=404)  # Получите учителя по имени пользователя
+            return JsonResponse({"error": "Учитель не найден."}, status=404)
 
+        # Создайте курс
         course = Courses(
             teacher=teacher,
             name=course_data["title"],
