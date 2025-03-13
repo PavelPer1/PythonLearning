@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.2/codemirror.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.2/codemirror.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.2/mode/python/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <style>
         .tech-icons {
             position: fixed;
@@ -91,6 +92,7 @@
             box-shadow: none !important;
         }
         .profile-dropdown {
+            z-index: 11;
             position: fixed;
             top: 0;
             right: -25%;
@@ -257,13 +259,15 @@
     transition: transform 0.3s; /* Плавный эффект подъема */
 }
 
-<<<<<<< HEAD
+
 .courses-list a:hover {
     transform: translateY(-5px); /* Поднимаем элемент при наведении */
 }
-=======
+.task-status {
+    position: relative;
+    z-index: 1;
+}
 
->>>>>>> pavel
     </style>
 </head>
 <body>
@@ -300,92 +304,209 @@
     </div>
     </div>
 
-    <div class="container">
-    <!-- Левая часть - Разделы заданий -->
-    <div class="sidebar">
-        <h4>Модули:</h4>
-        <ul id="taskList">
-            {% for module in tasks_json.modules %}  <!-- Обратите внимание на courses -->
-                <li><h3>{{ module.title }}</h3>
-                    <ul>
-                        {% for topic in module.topics %}
-                            <li><a href="#" class="topic-link" data-title="{{ topic.title }}" data-description="{{ topic.description|escapejs }}">{{ topic.title }}</a></li>
-                        {% endfor %}
-                    </ul>
-                </li>
+    <div class="container-fluid">
+    <div class="row">
+        <!-- Левая часть - Sidebar -->
+        <div class="col-md-3 bg-light sidebar p-3 vh-100 d-flex flex-column">
+        <h4 class="text-center">Модули</h4>
+        <div class="accordion" id="courseModules">
+            {% for module in tasks_json.modules %}
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="heading{{ forloop.counter }}">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ forloop.counter }}" aria-expanded="false" aria-controls="collapse{{ forloop.counter }}">
+                            {{ module.title }}
+                        </button>
+                    </h2>
+                    <div id="collapse{{ forloop.counter }}" class="accordion-collapse collapse" aria-labelledby="heading{{ forloop.counter }}" data-bs-parent="#courseModules">
+                        <div class="accordion-body">
+                            <ul class="list-group">
+                                {% for topic in module.topics %}
+                                    <li class="list-group-item">
+                                        <a href="#" class="topic-link text-decoration-none" 
+                                           data-title="{{ topic.title }}" 
+                                           data-description="{{ topic.description|escapejs }}">
+                                           {{ topic.title }}
+                                        </a>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
             {% endfor %}
-        </ul>
+        </div>
     </div>
 
 
         <!-- Центральная часть - Python компилятор -->
-        <div class="content">
-            <h2>Курс: {{ courses.name }}</h2>
-            <p><strong>Преподаватель:</strong> {{ courses.teacher }}</p>
-            <h3>Python Online Compiler</h3>
+        <div class="col-md-6 content p-4">
+            <h2 class="text-center">{{ courses.name }}</h2>
+            <p class="text-center"><strong>Преподаватель:</strong> {{ courses.author }}</p>
+            <h3 class="my-3 text-center">Python Online Compiler</h3>
             <form method="POST" action="{% url 'course_with_compiler' courses.name %}">
                 {% csrf_token %}
-                <div>
-                    <label for="codearea">Code Area</label>
-                    <textarea id="code" name="codearea">{{ code }}</textarea>
+                <div class="mb-3">
+                    <label for="codearea" class="form-label">Code Area</label>
+                    <textarea id="code" name="codearea" class="form-control" rows="10">{{ code }}</textarea>
                 </div>
-                <button type="submit" class="btn">Run</button>
-
-
+                <div class="text-center">
+                    <button type="submit" class="btn btn-secondary">Run</button>
+                </div>
             </form>
 
-            <div id="output">
+            <div id="output" class="mt-4">
                 {% if output %}
-                    <pre id="taskOutput">{{ output }}</pre>
+                    <pre id="taskOutput" class="bg-dark text-white p-3 rounded">{{ output }}</pre>
                 {% endif %}
             </div>
-
         </div>
 
-        <div class="description">
+        <!-- Правая часть - Описание задания и статус -->
+        <div class="col-md-3 description p-4 bg-light vh-100">
             <h4>Условие задания</h4>
-            <h5 id="taskTitle">Выберите задание</h5>
+            <h5 id="taskTitle" class="my-3">Выберите задание</h5>
             <p id="taskDescription"></p>
             <p id="taskExample"></p>
-        <div class="task-status">
-            <p id="statusMessage" class="{% if task_completed %}completed{% else %}not-completed{% endif %}">
-                {% if task_completed %}
-                    Задание выполнено!
-                {% else %}
-                    Задание не выполнено.
-                {% endif %}
-            </p>
+
+            <div class="task-status">
+                <p id="statusMessage" class="mt-3 alert {% if task_completed %}alert-success{% else %}alert-warning{% endif %}">
+                    {% if task_completed %}
+                        Задание выполнено!
+                    {% else %}
+                        Задание не выполнено.
+                    {% endif %}
+                </p>
             </div>
         </div>
     </div>
+</div>
+
+<!-- Стили для отключения стандартного стиля ссылок -->
+<style>
+    .topic-link {
+        text-decoration: none;
+        color: inherit;
+        cursor: pointer;
+        padding: 8px;
+    }
+    .topic-link:hover {
+        background-color: #f8f9fa;
+        border-radius: 5px;
+    }
+</style>
+
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        const taskLinks = document.querySelectorAll('.sidebar a');
-        const description = document.getElementById('taskDescription');
-        const statusMessage = document.getElementById('statusMessage');
+        var tasks = {{ tasks_json|safe }};
+        var completedTasks = {};
+        const courseId = "{{ courses.id }}";  // ID текущего курса
+        let currentTaskId = null;  // Изменено: Начальное значение null
 
-        taskLinks.forEach(function (link) {
-            link.addEventListener('click', function (e) {
-                e.preventDefault();
-                const taskId = link.getAttribute('data-title');
-                description.textContent = tasks.modules.find(module =>
-                    module.topics.some(topic => topic.title === taskId)
-                )?.topics.find(topic => topic.title === taskId)?.description || 'Описание не найдено';
-                // Сбрасываем статус предыдущего задания на "не выполнено"
-                statusMessage.textContent = 'Задание не выполнено';
-                statusMessage.classList.remove('completed');
-                statusMessage.classList.add('not-completed');
-                // Проверяем, завершено ли текущее задание
-                if (completedTasks[taskId]) {
-                    statusMessage.textContent = 'Задание завершено';
-                    statusMessage.classList.remove('not-completed');
-                    statusMessage.classList.add('completed');
+        const taskLinks = document.querySelectorAll('.topic-link');
+        const taskTitleElement = document.getElementById('taskTitle');
+        const taskDescriptionElement = document.getElementById('taskDescription');
+        const taskExampleElement = document.getElementById('taskExample');
+        const statusMessage = document.getElementById('statusMessage');
+        const form = document.querySelector('form');
+
+        console.log("Страница загружена, загружаем прогресс...");
+
+        // 1. Загружаем выполненные задания из базы
+        fetch(`/get-progress/${courseId}/`)
+            .then(response => response.json())
+            .then(data => {
+                console.log("Прогресс загружен:", data);
+                completedTasks = data.completed_tasks.reduce((acc, task) => {
+                    acc[task] = true;
+                    return acc;
+                }, {});
+                console.log("completedTasks после загрузки:", completedTasks);
+
+                updateTaskStatus();
+            })
+            .catch(error => console.error("Ошибка загрузки прогресса:", error));
+
+        // 2. Устанавливаем обработчики на выбор задания
+        taskLinks.forEach(link => {
+            link.addEventListener('click', function (event) {
+                event.preventDefault();
+                currentTaskId = this.getAttribute('data-title');
+                  console.log("Клик по заданию:", currentTaskId);
+
+                if (!currentTaskId) {
+                    console.error("Ошибка: task_id не найден!");
+                    return;
                 }
+
+                console.log("Выбрано задание:", currentTaskId);
+
+                taskTitleElement.textContent = currentTaskId;
+                taskDescriptionElement.textContent = this.getAttribute('data-description');
+                taskExampleElement.textContent = this.getAttribute('data-example') || '';
+
+                updateTaskStatus();
             });
         });
+
+        // 3. Функция для обновления статуса текущего задания
+        function updateTaskStatus() {
+             console.log("Обновляем статус, currentTaskId:", currentTaskId);
+    console.log("completedTasks:", completedTasks);
+            if (!currentTaskId) {
+                console.warn("updateTaskStatus вызван без task_id");
+                return;
+            }
+
+            if (completedTasks[currentTaskId]) {
+                statusMessage.textContent = 'Задание выполнено!';
+                statusMessage.classList.add('alert-success');
+                statusMessage.classList.remove('alert-warning');
+            } else {
+                statusMessage.textContent = 'Задание не выполнено.';
+                statusMessage.classList.add('alert-warning');
+                statusMessage.classList.remove('alert-success');
+            }
+        }
+
+        // 4. Перехватываем отправку формы и сохраняем прогресс
+        form.addEventListener('submit', function (event) {
+
+            if (!currentTaskId) {
+                event.preventDefault();
+                alert("Выберите задание перед отправкой.");
+                return;
+            }
+
+            console.log("Отправка задания:", currentTaskId);
+
+            fetch('/save-progress/', {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": "{{ csrf_token }}",
+                },
+                body: JSON.stringify({
+                    task_id: currentTaskId,
+                    course_id: courseId
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log("Ответ сервера:", data);
+                if (data.message) {
+                    completedTasks[currentTaskId] = true;
+                    updateTaskStatus();
+                } else {
+                    console.error("Ошибка сохранения:", data.error);
+                }
+            })
+            .catch(error => console.error("Ошибка запроса сохранения прогресса:", error));
+        });
     });
+
 </script>
+
 <script>
     var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
         lineNumbers: true,
@@ -407,56 +528,5 @@
     }
 
 </script>
-<script>
-
-    document.addEventListener('DOMContentLoaded', function() {
-        const topicLinks = document.querySelectorAll('.topic-link');
-        const taskTitleElement = document.getElementById('taskTitle');
-        const taskDescriptionElement = document.getElementById('taskDescription');
-        const taskExampleElement = document.getElementById('taskExample');
-        const form = document.querySelector('form');
-
-        let currentTaskId = '';
-        topicLinks.forEach(link => {
-            link.addEventListener('click', function(event) {
-                event.preventDefault(); // Предотвращаем переход по ссылке
-                const title = this.getAttribute('data-title');
-                const description = this.getAttribute('data-description');
-                const example = this.getAttribute('data-example'); // Получаем пример
-                taskTitleElement.textContent = title;
-                taskDescriptionElement.textContent = description;
-                taskExampleElement.textContent = example; // Устанавливаем пример
-                // Сохраняем текущий task_id
-                currentTaskId = title; // Предполагаем, что title уникален и соответствует task_id
-            });
-        });
-        // Добавляем обработчик события на форму
-        form.addEventListener('submit', function(event) {
-            // Проверяем, установлен ли currentTaskId
-            if (!currentTaskId) {
-                event.preventDefault(); // Предотвращаем отправку формы, если task_id не установлен
-                alert("Пожалуйста, выберите задание перед отправкой.");
-                return;
-            }
-            // Добавляем скрытое поле с task
-            // Добавляем скрытое поле с task_id
-            const hiddenInput = document.createElement('input');
-            hiddenInput.type = 'hidden';
-            hiddenInput.name = 'task_id';
-            hiddenInput.value = currentTaskId;
-            form.appendChild(hiddenInput);
-            // Вызываем функцию для отметки задания как завершенного
-            markTaskAsCompleted(currentTaskId);
-        });
-    });
-</script>
-<div class="tech-icons">
-        <img src="https://img.icons8.com/?size=48&id=13441&format=png" class="icon python">
-        <img src="https://img.icons8.com/?size=50&id=XPdRFanRZtNK&format=png" class="icon django">
-        <img src="https://img.icons8.com/?size=80&id=6eTRpgF0TFTj&format=png" class="icon js">
-        <img src="https://img.icons8.com/?size=50&id=1043&format=png" class="icon html">
-        <img src="https://img.icons8.com/?size=50&id=1045&format=png" class="icon css">
-        <img src="https://img.icons8.com/?size=80&id=eJCmZxqMUnt8&format=png" class="icon postgresql">
-    </div>
 </body>
 </html>

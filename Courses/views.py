@@ -7,14 +7,52 @@ from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from PythonLearning import settings
-
+from django.views.decorators.csrf import csrf_exempt
 
 import json
 import traceback
 from io import StringIO
 from contextlib import redirect_stdout
-from Courses.models import Courses, StudentCourser
+from Courses.models import Courses, StudentCourser, CompletedTask
 from Profile.models import Student
+from django.http import JsonResponse
+
+
+@csrf_exempt
+@login_required
+def save_progress(request):
+    """Сохраняем выполненное задание."""
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body)
+            task_id = data.get("task_id")
+            course_id = data.get("course_id")
+
+            student, created = Student.objects.get_or_create(name_id=request.user.id)
+            course = Courses.objects.filter(id=course_id).first()
+
+            if not course:
+                return JsonResponse({"error": "Курс не найден"}, status=400)
+
+            if task_id:
+                CompletedTask.objects.get_or_create(student=student, course=course, task_id=task_id)
+                return JsonResponse({"message": "Прогресс сохранён!"}, status=200)
+
+            return JsonResponse({"error": "Неверные данные"}, status=400)
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=500)
+
+@login_required
+def get_progress(request, course_id):
+    """Получаем список выполненных заданий для курса."""
+    student = Student.objects.filter(name_id=request.user.id).first()
+    
+    if not student:
+        return JsonResponse({"completed_tasks": []}, status=200)
+
+    completed_tasks = CompletedTask.objects.filter(student=student, course_id=course_id).values_list("task_id", flat=True)
+    return JsonResponse({"completed_tasks": list(completed_tasks)}, status=200)
+
 
 def my_courses_view(request):
     my_crs = []

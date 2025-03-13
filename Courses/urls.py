@@ -9,6 +9,8 @@ urlpatterns = [
     path('courses/', course_list, name='course_list'),
     path('my-courses/', my_courses_view, name='my_courses'),
     path('<int:course_id>/', course_detail, name='course_detail'),  
+    path("save-progress/", save_progress, name="save_progress"),
+    path("get-progress/<int:course_id>/", get_progress, name="get_progress"),
 ]
 
 if settings.DEBUG:
