@@ -16,11 +16,17 @@ def login_view(request):
     courses = Courses.objects.all()
     my_crs = []  # Список для курсов текущего пользователя
     # Получаем студента, связанного с текущим пользователем
-    student = Student.objects.get(name=request.user)
-    
-    # Получаем все объекты StudentCourser, связанные с этим студентом
-    for student_course in StudentCourser.objects.filter(student=student):
-        my_crs.append(student_course.courses)  # Добавляем курс в список
+    if  not Teacher.objects.get(name=user):
+        student = Student.objects.get(name=user)
+        # Получаем все объекты StudentCourser, связанные с этим студентом
+        for student_course in StudentCourser.objects.filter(student=student):
+            my_crs.append(student_course.courses)  # Добавляем курс в список
+    else:
+        teacher = Teacher.objects.get(name=user)
+        # Получаем все объекты StudentCourser, связанные с этим студентом
+        for teacher_course in Courses.objects.filter(teacher=teacher):
+            my_crs.append(teacher_course)  # Добавляем курс в список
+
 
     return render(request, 'profile_title/profile.html', {'user': user, 'courses': courses, 'my_crs': my_crs})
 
