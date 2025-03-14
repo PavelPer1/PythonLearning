@@ -24,26 +24,40 @@ from django.http import JsonResponse
 @csrf_exempt
 @login_required
 def save_progress(request):
-    """Сохраняем выполненное задание."""
+    """Сохраняем выполненное задание и проверяем правильность ответа."""
     if request.method == "POST":
         try:
             data = json.loads(request.body)
             task_id = data.get("task_id")
             course_id = data.get("course_id")
-
             student, created = Student.objects.get_or_create(name_id=request.user.id)
             course = Courses.objects.filter(id=course_id).first()
 
             if not course:
                 return JsonResponse({"error": "Курс не найден"}, status=400)
 
-            if task_id:
-                CompletedTask.objects.get_or_create(student=student, course=course, task_id=task_id)
-                return JsonResponse({"message": "Прогресс сохранён!"}, status=200)
+            # Получаем задание и правильный ответ
+            task = Task.objects.filter(id=task_id).first()
+            if not task:
+                return JsonResponse({"error": "Задание не найдено"}, status=400)
 
-            return JsonResponse({"error": "Неверные данные"}, status=400)
+            correct_answer = task.answer  # Предположим, что в модели Task есть поле "answer" с правильным ответом
+            user_answer = data.get("code")
+
+            # Проверяем правильность ответа
+            if user_answer.strip() == correct_answer.strip():
+                is_correct = True
+            else:
+                is_correct = False
+
+            # Сохраняем прогресс
+            CompletedTask.objects.get_or_create(student=student, course=course, task_id=task_id)
+
+            return JsonResponse({"message": "Прогресс сохранён!", "is_correct": is_correct}, status=200)
+
         except Exception as e:
             return JsonResponse({"error": str(e)}, status=500)
+
 
 @login_required
 def get_progress(request, course_id):
