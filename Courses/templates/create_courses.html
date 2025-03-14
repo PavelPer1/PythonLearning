@@ -29,50 +29,13 @@
 
             <section>
                 <h2 class="my-4">Модули</h2>
-                <div id="modules">
-                    <!-- Первый модуль -->
-                    <div class="module" id="module_1">
-                        <h3>Модуль 1</h3>
-                        <div class="mb-3">
-                            <label for="module_title_1" class="form-label">Название модуля:</label>
-                            <input type="text" class="form-control" id="module_title_1" name="module_title_1" required>
-                        </div>
-                        <h4>Разделы</h4>
-                        <div class="sections" id="sections_1">
-                            <div class="section mb-4">
-                                <h5>Раздел 1.1</h5>
-                                <div class="mb-3">
-                                    <label for="section_title_1_1" class="form-label">Название раздела:</label>
-                                    <input type="text" class="form-control" id="section_title_1_1" name="section_title_1_1" required>
-                                </div>
-                                <h6>Задания</h6>
-                                <div class="tasks" id="tasks_1_1">
-                                    <div class="task mb-3">
-                                        <div class="mb-2">
-                                            <label for="task_title_1_1_1" class="form-label">Название задания:</label>
-                                            <input type="text" class="form-control" id="task_title_1_1_1" name="task_title_1_1_1" required>
-                                        </div>
-
-                                        <div class="mb-2">
-                                            <label for="task_description_1_1_1" class="form-label">Описание задания:</label>
-                                            <textarea class="form-control" id="task_description_1_1_1" name="task_description_1_1_1" required></textarea>
-                                        </div>
-
-                                        <div class="mb-2">
-                                            <label for="task_answer_1_1_1" class="form-label">Ответ:</label>
-                                            <input type="text" class="form-control" id="task_answer_1_1_1" name="task_answer_1_1_1" required>
-                                        </div>
-                                    </div>
-                                </div>
-                                <button type="button" class="btn btn-outline-primary" onclick="addTask(1, 1)">Добавить задание</button>
-                            </div>
-                        </div>
-                        <button type="button" class="btn btn-outline-secondary" onclick="addSection(1)">Добавить раздел</button>
-                    </div>
+                <div id="modules" class="accordion" id="accordionModules">
+                    <!-- Здесь будут отображаться модули -->
                 </div>
+                <!-- Кнопка "Добавить модуль" теперь под списком модулей -->
+                <button type="button" class="btn btn-outline-success my-4" onclick="addModule()">Добавить модуль</button>
             </section>
 
-            <button type="button" class="btn btn-outline-success my-4" onclick="addModule()">Добавить модуль</button>
             <button type="submit" class="btn btn-secondary">Создать курс</button>
         </form>
     </main>
@@ -81,106 +44,114 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     
     <script>
-        let moduleCount = 1;
+        let moduleCount = 0; // Счётчик для модулей
+        let sectionCounts = {}; // Словарь для отслеживания количества разделов для каждого модуля
+        let taskCounts = {}; // Словарь для отслеживания количества заданий для каждого раздела
 
         function addModule() {
             moduleCount++;
+            sectionCounts[moduleCount] = 1; // Начинаем отсчёт разделов с 1 для нового модуля
+            taskCounts[moduleCount] = {}; // Инициализируем пустой объект для хранения количества заданий для каждого раздела
             const modulesDiv = document.getElementById('modules');
             const newModule = `
-                <div class="module" id="module_${moduleCount}">
-                    <h3>Модуль ${moduleCount}</h3>
-                    <div class="mb-3">
-                        <label for="module_title_${moduleCount}" class="form-label">Название модуля:</label>
-                        <input type="text" class="form-control" id="module_title_${moduleCount}" name="module_title_${moduleCount}" required>
-                    </div>
-                    <h4>Разделы</h4>
-                    <div class="sections" id="sections_${moduleCount}">
-                        <div class="section mb-4">
-                            <h5>Раздел ${moduleCount}.1</h5>
+                <div class="accordion-item" id="module_${moduleCount}">
+                    <h2 class="accordion-header" id="heading_${moduleCount}">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse_${moduleCount}" aria-expanded="true" aria-controls="collapse_${moduleCount}">
+                            Модуль ${moduleCount}
+                        </button>
+                    </h2>
+                    <div id="collapse_${moduleCount}" class="accordion-collapse collapse" aria-labelledby="heading_${moduleCount}" data-bs-parent="#accordionModules">
+                        <div class="accordion-body">
                             <div class="mb-3">
-                                <label for="section_title_${moduleCount}_1" class="form-label">Название раздела:</label>
-                                <input type="text" class="form-control" id="section_title_${moduleCount}_1" name="section_title_${moduleCount}_1" required>
+                                <label for="module_title_${moduleCount}" class="form-label">Название модуля:</label>
+                                <input type="text" class="form-control" id="module_title_${moduleCount}" name="module_title_${moduleCount}" required>
                             </div>
-                            <h6>Задания</h6>
-                            <div class="tasks" id="tasks_${moduleCount}_1">
-                                <div class="task mb-3">
-                                    <div class="mb-2">
-                                        <label for="task_title_${moduleCount}_1_1" class="form-label">Название задания:</label>
-                                        <input type="text" class="form-control" id="task_title_${moduleCount}_1_1" name="task_title_${moduleCount}_1_1" required>
-                                    </div>
-
-                                    <div class="mb-2">
-                                        <label for="task_description_${moduleCount}_1_1" class="form-label">Описание задания:</label>
-                                        <textarea class="form-control" id="task_description_${moduleCount}_1_1" name="task_description_${moduleCount}_1_1" required></textarea>
-                                    </div>
-
-                                    <div class="mb-2">
-                                        <label for="task_answer_${moduleCount}_1_1" class="form-label">Ответ:</label>
-                                        <input type="text" class="form-control" id="task_answer_${moduleCount}_1_1" name="task_answer_${moduleCount}_1_1" required>
-                                    </div>
-                                </div>
+                            <h4>Разделы</h4>
+                            <div class="accordion" id="sections_${moduleCount}">
+                                <!-- Разделы для модуля будут добавлены здесь -->
                             </div>
-                            <button type="button" class="btn btn-outline-primary" onclick="addTask(${moduleCount}, 1)">Добавить задание</button>
+                            <button type="button" class="btn btn-outline-secondary" onclick="addSection(${moduleCount})">Добавить раздел</button>
+                            <button type="button" class="btn btn-outline-danger mt-2" onclick="removeModule(${moduleCount})">Удалить модуль</button>
                         </div>
                     </div>
-                    <button type="button" class="btn btn-outline-secondary" onclick="addSection(${moduleCount})">Добавить раздел</button>
                 </div>
             `;
             modulesDiv.insertAdjacentHTML('beforeend', newModule);
         }
 
+        function removeModule(moduleId) {
+            // Удаляем модуль из DOM
+            const moduleElement = document.getElementById(`module_${moduleId}`);
+            moduleElement.remove();
+
+            // Уменьшаем счётчик модулей
+            moduleCount--;
+
+            // Удаляем связанные данные о разделе и заданиях для этого модуля
+            delete sectionCounts[moduleId];
+            delete taskCounts[moduleId];
+        }
+
         function addSection(moduleId) {
-            const sectionCount = document.querySelectorAll(`#sections_${moduleId} .section`).length + 1;
+            const sectionCount = sectionCounts[moduleId] || 1;
+            sectionCounts[moduleId] = sectionCount + 1; // Увеличиваем счётчик разделов для этого модуля
+            taskCounts[moduleId][sectionCount] = 1; // Инициализируем счётчик заданий для этого раздела
+
+            const sectionId = `${moduleId}_${sectionCount}`;
             const sectionsDiv = document.getElementById(`sections_${moduleId}`);
             const newSection = `
-                <div class="section mb-4">
-                    <h5>Раздел ${moduleId}.${sectionCount}</h5>
-                    <div class="mb-3">
-                        <label for="section_title_${moduleId}_${sectionCount}" class="form-label">Название раздела:</label>
-                        <input type="text" class="form-control" id="section_title_${moduleId}_${sectionCount}" name="section_title_${moduleId}_${sectionCount}" required>
-                    </div>
-                    <h6>Задания</h6>
-                    <div class="tasks" id="tasks_${moduleId}_${sectionCount}">
-                        <div class="task mb-3">
-                            <div class="mb-2">
-                                <label for="task_title_${moduleId}_${sectionCount}_1" class="form-label">Название задания:</label>
-                                <input type="text" class="form-control" id="task_title_${moduleId}_${sectionCount}_1" name="task_title_${moduleId}_${sectionCount}_1" required>
+                <div class="accordion-item" id="section_${sectionId}">
+                    <h2 class="accordion-header" id="heading_${sectionId}">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse_${sectionId}" aria-expanded="true" aria-controls="collapse_${sectionId}">
+                            Раздел ${sectionId}
+                        </button>
+                    </h2>
+                    <div id="collapse_${sectionId}" class="accordion-collapse collapse" aria-labelledby="heading_${sectionId}" data-bs-parent="#sections_${moduleId}">
+                        <div class="accordion-body">
+                            <div class="mb-3">
+                                <label for="section_title_${sectionId}" class="form-label">Название раздела:</label>
+                                <input type="text" class="form-control" id="section_title_${sectionId}" name="section_title_${sectionId}" required>
                             </div>
-                            <div class="mb-2">
-                                            <label for="task_description_${moduleId}_${sectionCount}_1" class="form-label">Описание задания:</label>
-                                            <textarea class="form-control" id="task_description_${moduleId}_${sectionCount}_1" name="task_description_${moduleId}_${sectionCount}_1" required></textarea>
-                                </div>
-
-                            <div class="mb-2">
-                                <label for="task_answer_${moduleId}_${sectionCount}_1" class="form-label">Ответ:</label>
-                                <input type="text" class="form-control" id="task_answer_${moduleId}_${sectionCount}_1" name="task_answer_${moduleId}_${sectionCount}_1" required>
+                            <h6>Задания</h6>
+                            <div class="accordion" id="tasks_${sectionId}">
+                                <!-- Задания для раздела будут добавлены здесь -->
                             </div>
+                            <button type="button" class="btn btn-outline-primary" onclick="addTask(${moduleId}, ${sectionCount})">Добавить задание</button>
                         </div>
                     </div>
-                    <button type="button" class="btn btn-outline-primary" onclick="addTask(${moduleId}, ${sectionCount})">Добавить задание</button>
                 </div>
             `;
             sectionsDiv.insertAdjacentHTML('beforeend', newSection);
         }
 
         function addTask(moduleId, sectionId) {
-            const taskCount = document.querySelectorAll(`#tasks_${moduleId}_${sectionId} .task`).length + 1;
+            const taskCount = taskCounts[moduleId][sectionId] || 1;
+            taskCounts[moduleId][sectionId] = taskCount + 1; // Увеличиваем счётчик заданий для этого раздела
+
+            const taskId = `${moduleId}_${sectionId}_${taskCount}`;
             const tasksDiv = document.getElementById(`tasks_${moduleId}_${sectionId}`);
             const newTask = `
-                <div class="task mb-3">
-                    <div class="mb-2">
-                        <label for="task_title_${moduleId}_${sectionId}_${taskCount}" class="form-label">Название задания:</label>
-                        <input type="text" class="form-control" id="task_title_${moduleId}_${sectionId}_${taskCount}" name="task_title_${moduleId}_${sectionId}_${taskCount}" required>
-                    </div>
-
-                    <div class="mb-2">
-                        <label for="task_description_${moduleId}_${sectionId}_${taskCount}" class="form-label">Описание задания:</label>
-                        <textarea class="form-control" id="task_description_${moduleId}_${sectionId}_${taskCount}" name="task_description_${moduleId}_${sectionId}_${taskCount}" required></textarea>
-                    </div>
-
-                    <div class="mb-2">
-                        <label for="task_answer_${moduleId}_${sectionId}_${taskCount}" class="form-label">Ответ:</label>
-                        <input type="text" class="form-control" id="task_answer_${moduleId}_${sectionId}_${taskCount}" name="task_answer_${moduleId}_${sectionId}_${taskCount}" required>
+                <div class="accordion-item" id="task_${taskId}">
+                    <h2 class="accordion-header" id="heading_${taskId}">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse_${taskId}" aria-expanded="true" aria-controls="collapse_${taskId}">
+                            Задание ${taskCount}
+                        </button>
+                    </h2>
+                    <div id="collapse_${taskId}" class="accordion-collapse collapse" aria-labelledby="heading_${taskId}" data-bs-parent="#tasks_${moduleId}_${sectionId}">
+                        <div class="accordion-body">
+                            <div class="mb-3">
+                                <label for="task_title_${taskId}" class="form-label">Название задания:</label>
+                                <input type="text" class="form-control" id="task_title_${taskId}" name="task_title_${taskId}" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="task_description_${taskId}" class="form-label">Описание задания:</label>
+                                <textarea class="form-control" id="task_description_${taskId}" name="task_description_${taskId}" required></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label for="task_answer_${taskId}" class="form-label">Ответ:</label>
+                                <input type="text" class="form-control" id="task_answer_${taskId}" name="task_answer_${taskId}" required>
+                            </div>
+                        </div>
                     </div>
                 </div>
             `;

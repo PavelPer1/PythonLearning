@@ -1,35 +1,56 @@
 {
-    "title": "Python EZE",
-    "description": "For students EZ python",
+    "title": "jojo",
+    "description": "123",
     "modules": [
         {
-            "title": "Introdaction",
+            "title": "intro",
             "description": null,
             "sections": [
                 {
-                    "title": "Print",
+                    "title": "firstp",
                     "description": null,
                     "tasks": [
                         {
-                            "title": "Hello world!",
-                            "description": "print Hello world!",
-                            "answer": "Hello world!"
+                            "title": "print",
+                            "description": "print h",
+                            "answer": "h"
                         },
                         {
-                            "title": "type int",
-                            "description": "print type a = 3",
-                            "answer": "<class 'int'>"
+                            "title": "print2",
+                            "description": "print a",
+                            "answer": "a"
+                        },
+                        {
+                            "title": "print c",
+                            "description": "print c ",
+                            "answer": "c"
                         }
                     ]
                 },
                 {
-                    "title": "typeS",
+                    "title": "type",
                     "description": null,
                     "tasks": [
                         {
-                            "title": "type int",
-                            "description": "print type a = 3",
+                            "title": "print type",
+                            "description": "print type int",
                             "answer": "<class 'int'>"
+                        },
+                        {
+                            "title": "print type",
+                            "description": "print type str",
+                            "answer": "int"
+                        }
+                    ]
+                },
+                {
+                    "title": "print type",
+                    "description": null,
+                    "tasks": [
+                        {
+                            "title": "asdas",
+                            "description": "w1321",
+                            "answer": "dwsqd"
                         }
                     ]
                 }
