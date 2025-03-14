@@ -291,6 +291,8 @@ def render_create_course(request):
         )
         course.save()
 
+        return redirect('course_list')
+
     return render(request, 'create_courses.html')
 
 

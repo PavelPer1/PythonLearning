@@ -1,35 +1,19 @@
 {
-    "title": "Python EZE",
-    "description": "For students EZ python",
+    "title": "апавфапфвап",
+    "description": "фвапфвапфвап",
     "modules": [
         {
-            "title": "Introdaction",
+            "title": "фвапфвап",
             "description": null,
             "sections": [
                 {
-                    "title": "Print",
+                    "title": "фваапавпфавп",
                     "description": null,
                     "tasks": [
                         {
-                            "title": "Hello world!",
-                            "description": "print Hello world!",
-                            "answer": "Hello world!"
-                        },
-                        {
-                            "title": "type int",
-                            "description": "print type a = 3",
-                            "answer": "<class 'int'>"
-                        }
-                    ]
-                },
-                {
-                    "title": "typeS",
-                    "description": null,
-                    "tasks": [
-                        {
-                            "title": "type int",
-                            "description": "print type a = 3",
-                            "answer": "<class 'int'>"
+                            "title": "фвапфвапфвапп",
+                            "description": "фвапфвапфвап",
+                            "answer": "фвапфвапфвп"
                         }
                     ]
                 }
