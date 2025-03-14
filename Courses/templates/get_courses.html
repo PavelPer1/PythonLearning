@@ -372,25 +372,21 @@
         </div>
 
         <!-- Правая часть - Описание задания и статус -->
-<div class="col-md-3 description p-4 bg-light vh-100">
-    <h4>Условие задания</h4>
-    <h5 id="taskTitle" class="my-3">Выберите задание</h5>
-    <p id="taskDescription"></p>
+        <div class="col-md-3 description p-4 bg-light vh-100">
+            <h4>Условие задания</h4>
+            <h5 id="taskTitle" class="my-3">Выберите задание</h5>
+            <p id="taskDescription"></p>
 
-    <div class="task-status">
-        <p id="statusMessage" class="mt-3 alert {% if task_completed %}alert-success{% else %}alert-warning{% endif %}">
-            {% if task_completed %}
-                Задание выполнено!
-            {% else %}
-                Задание не выполнено.
-            {% endif %}
-        </p>
-    </div>
-
-    <!-- Сообщение о правильности ответа -->
-    <p id="taskAnswerMessage" class="mt-3"></p>
-</div>
-
+            <div class="task-status">
+                <p id="statusMessage" class="mt-3 alert {% if task_completed %}alert-success{% else %}alert-warning{% endif %}">
+                    {% if task_completed %}
+                        Задание выполнено!
+                    {% else %}
+                        Задание не выполнено.
+                    {% endif %}
+                </p>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -421,6 +417,7 @@
     const taskDescriptionElement = document.getElementById('taskDescription');
     const statusMessage = document.getElementById('statusMessage');
     const taskOutputElement = document.getElementById('taskOutput');
+    
 
     // Получение прогресса выполненных заданий
     fetch(`/get-progress/${courseId}`)
