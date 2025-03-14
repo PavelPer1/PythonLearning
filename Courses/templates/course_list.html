@@ -244,6 +244,9 @@
                 
             {% else %}
                 <a href="{% url 'my_courses' %}" class="btn">Мои курсы</a>
+            {% if teacher %}
+                    <a href="{% url 'create_course' %}" class="btn">Создать курс</a>
+                {% endif %}
             {% endif %}
         </div>
         <div class="right-btns">

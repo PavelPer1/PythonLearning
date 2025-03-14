@@ -16,7 +16,7 @@ def login_view(request):
     courses = Courses.objects.all()
     my_crs = []  # Список для курсов текущего пользователя
     # Получаем студента, связанного с текущим пользователем
-    if  not Teacher.objects.get(name=user):
+    if  not Teacher.objects.filter(name=user).exists():
         student = Student.objects.get(name=user)
         # Получаем все объекты StudentCourser, связанные с этим студентом
         for student_course in StudentCourser.objects.filter(student=student):
@@ -27,8 +27,20 @@ def login_view(request):
         for teacher_course in Courses.objects.filter(teacher=teacher):
             my_crs.append(teacher_course)  # Добавляем курс в список
 
+    teach = False
 
-    return render(request, 'profile_title/profile.html', {'user': user, 'courses': courses, 'my_crs': my_crs})
+    if request.user.is_authenticated:
+        teach = Teacher.objects.filter(name=request.user).exists()
+
+    context = {
+        'teacher': teach,
+        'user': user,
+        'courses': courses,
+        'my_crs': my_crs
+    }
+
+
+    return render(request, 'profile_title/profile.html', context)
 
 def logout_view(request):
     logout(request)
