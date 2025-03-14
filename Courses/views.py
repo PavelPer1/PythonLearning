@@ -62,7 +62,17 @@ def my_courses_view(request):
         if i.student.name == request.user:
             my_crs.append(i.courses)
 
-    return render(request, 'my_courses.html', {'my_crs': my_crs})
+    teach = False
+
+    if request.user.is_authenticated:
+        teach = Teacher.objects.filter(name=request.user).exists()
+
+    context = {
+        'teacher': teach,
+        'my_crs': my_crs
+    }
+
+    return render(request, 'my_courses.html', context)
 
 
 def course_list(request):
@@ -71,7 +81,12 @@ def course_list(request):
 
     # Получаем параметры поиска и сортировки из GET-запроса
     search_query = request.GET.get('search', '')  
-    sort_by = request.GET.get('sort', 'name')  
+    sort_by = request.GET.get('sort', 'name')
+
+    teach = False
+
+    if request.user.is_authenticated:
+        teach = Teacher.objects.filter(name=request.user).exists()
 
     # Фильтруем курсы по названию
     if search_query:
@@ -109,6 +124,8 @@ def course_list(request):
         'my_crs': my_crs,
         'search_query': search_query,
         'sort_by': sort_by,
+        'teacher': teach
+
     })
 
 def course_detail(request, course_id):
@@ -124,6 +141,7 @@ def course_detail(request, course_id):
         'students_count': students_count,
         'tasks_json': tasks_json,
         'my_crs': my_crs  # Передаем модули на страницу
+
     })
 
 
@@ -176,6 +194,11 @@ def course_with_compiler(request, crs):
 
     task_completed = False
 
+    teach = False
+
+    if request.user.is_authenticated:
+        teach = Teacher.objects.filter(name=request.user).exists()
+
     if request.method == "POST":
         code = request.POST.get('codearea', '')
         task_id = request.POST.get('task_id', '')
@@ -207,6 +230,7 @@ def course_with_compiler(request, crs):
         'code': code,
         'tasks_json': tasks,  # Преобразуем в JSON-строку
         'task_completed': task_completed,
+        'teacher': teach
     }
 
     return render(request, 'get_courses.html', context)
@@ -230,7 +254,7 @@ def render_create_course(request):
             module_description = request.POST.get(f'module_description_{module_count}')
             module = {
                 "title": module_title,
-                "description": module_description,
+                "description": request.POST.get('course_description'),
                 "sections": []  # Изменено на "sections"
             }
 

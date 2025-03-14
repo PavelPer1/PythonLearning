@@ -244,6 +244,9 @@
                 
             {% else %}
                 <a href="{% url 'my_courses' %}" class="btn">Мои курсы</a>
+            {% if teacher %}
+                    <a href="{% url 'create_course' %}" class="btn">Создать курс</a>
+                {% endif %}
             {% endif %}
         </div>
         <div class="right-btns">
@@ -299,7 +302,6 @@
                 <h3><a href="{% url 'course_detail' course.id %}" class="course-title">{{ course.name }}</a></h3>
                 <p><strong>Автор:</strong> {{ course.author }}</p>
                 <p><strong>Язык:</strong> {{ course.language }}</p>
-                <p><strong>Прогресс:</strong> {{ course.progress }}%</p>
 
                 <form method="post" action="{% url 'course_list' %}">
                     {% csrf_token %}

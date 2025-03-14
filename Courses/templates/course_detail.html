@@ -281,7 +281,7 @@
             <!-- Разделы курса -->
             <h3 class="mt-4">Разделы курса:</h3>
             <div class="accordion" id="courseModules">
-                {% for module in tasks_json.modules %}
+                {% for module in tasks_json.modules %} 
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="heading{{ forloop.counter }}">
                             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ forloop.counter }}" aria-expanded="false" aria-controls="collapse{{ forloop.counter }}">
@@ -291,10 +291,10 @@
                         <div id="collapse{{ forloop.counter }}" class="accordion-collapse collapse" aria-labelledby="heading{{ forloop.counter }}" data-bs-parent="#courseModules">
                             <div class="accordion-body">
                                 <ul class="list-group">
-                                    {% for topic in module.topics %}
+                                    {% for section in module.sections %}
                                         <li class="list-group-item">
                                             <a href="#" class="topic-link text-decoration-none" data-title="{{ topic.title }}" data-description="{{ topic.description }}">
-                                                {{ topic.title }}
+                                                {{ section.title }}
                                             </a>
                                         </li>
                                     {% endfor %}

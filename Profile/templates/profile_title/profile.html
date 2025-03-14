@@ -260,7 +260,7 @@
     align-items: stretch; /* Растягивает элементы по высоте */
     display: flex;
     flex-wrap: wrap; /* Перенос элементов на новую строку */
-    gap: 20px;  /* Устанавливаем минимальный интервал между кнопками */
+    gap: 45px;  /* Устанавливаем минимальный интервал между кнопками */
 }
       .recommended-course:hover {
           color: black; 
@@ -304,8 +304,8 @@
 }
 
 .recommended-course {
-      width: 200px; /* Уменьшаем ширину */
-    min-height: 180px;
+    width: 220px; /* Уменьшаем ширину */
+    min-height: 220px;
     border: 1px solid #ddd;
     padding: 15px;
     border-radius: 10px;
@@ -442,7 +442,7 @@
       <main class="content">
     <h2>Моё обучение</h2>
     <div class="recommended-course-container">
-    {% for course in my_crs %}
+    {% for course in my_crs|slice:":3" %}
     <a href="{% url 'course_detail' course.id %}" class="course-link">
         <div class="recommended-course">
             {% if course.image %}
@@ -451,10 +451,6 @@
                 <div class="no-cover">Нет обложки</div>
             {% endif %}
             <h4>{{ course.name }}</h4>
-            <div class="progress">
-                <div class="progress-bar" style="width: {{ course.progress }}%"></div>
-            </div>
-            <p>{{ course.progress }}%</p>
         </div>
     </a>
     {% empty %}
@@ -462,11 +458,11 @@
     {% endfor %}
 </div>
 
-
+{% if not teacher %}
     <div class="recommended">
         <h3>Рекомендуемые курсы</h3>
         <div class="recommended-course-container">
-            {% for course in courses %}
+            {% for course in courses|slice:":3" %}
             <a href="{% url 'course_detail' course.id %}" class="course-link">
                 <div class="recommended-course">
                     {% if course.image %}
@@ -483,6 +479,11 @@
             {% endfor %}
         </div>
     </div>
+{% else %}
+    <!-- Место для кода для учителей, если нужно -->
+{% endif %}
+
+
 </main>
 
     </div>
