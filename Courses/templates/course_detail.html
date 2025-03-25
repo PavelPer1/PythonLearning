@@ -291,10 +291,17 @@
                         <div id="collapse{{ forloop.counter }}" class="accordion-collapse collapse" aria-labelledby="heading{{ forloop.counter }}" data-bs-parent="#courseModules">
                             <div class="accordion-body">
                                 <ul class="list-group">
+<<<<<<< HEAD
                                     {% for section in module.sections %}
                                         <li class="list-group-item">
                                             <a href="#" class="topic-link text-decoration-none" data-title="{{ topic.title }}" data-description="{{ topic.description }}">
                                                 {{ section.title }}
+=======
+                                    {% for sections in module.sections %}
+                                        <li class="list-group-item">
+                                            <a href="#" class="sections-link text-decoration-none" data-title="{{ sections.title }}" data-description="{{ sections.description }}">
+                                                {{ sections.title }}
+>>>>>>> develop1
                                             </a>
                                         </li>
                                     {% endfor %}
