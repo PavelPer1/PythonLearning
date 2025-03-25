@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <!-- Card with header and body -->
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Помощь и поддержка</h4>
+                </div>
+                <div class="card-body">
+                    <p class="lead">Здесь собраны ответы на часто задаваемые вопросы.</p>
+
+                    <!-- Accordion for FAQ -->
+                    <div class="accordion" id="faqAccordion">
+                        <!-- FAQ 1: How to change login -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingOne">
+                                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                    Как сменить логин?
+                                </button>
+                            </h2>
+                            <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    Перейдите в <a href="{% url 'settings' %}" class="text-decoration-none">настройки</a>, введите новый логин и подтвердите его текущим паролем.
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- FAQ 2: How to change password -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingTwo">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                    Как сменить пароль?
+                                </button>
+                            </h2>
+                            <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    В <a href="{% url 'settings' %}" class="text-decoration-none">настройках</a> введите старый и новый пароли и сохраните изменения.
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- FAQ 3: How to log out -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingThree">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                                    Как выйти из аккаунта?
+                                </button>
+                            </h2>
+                            <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    Нажмите "Выйти" в верхнем меню или перейдите по <a href="{% url 'logout' %}" class="text-decoration-none">этой ссылке</a>.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Return to home button -->
+                    <div class="mt-4 text-center">
+                        <a href="{% url 'home' %}" class="btn btn-secondary btn-lg">Вернуться на главную</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

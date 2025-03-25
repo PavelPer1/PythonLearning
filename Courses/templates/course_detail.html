@@ -1,3 +1,5 @@
+{% extends "base.html" %}
+{% block content %}
 {% load static %}
 <!DOCTYPE html>
 <html lang="ru">
@@ -223,38 +225,6 @@
     </style>
 </head>
 <body>
-    <header class="header container-fluid">
-        <div class="left-btns">
-            <h1><a href="{% url 'home'%}"> PyMi</h1>
-            <a href="{% url 'course_list' %}" class="btn">Курсы</a>
-            {% if not request.user.is_authenticated %}
-                
-            {% else %}
-                <a href="{% url 'my_courses' %}" class="btn">Мои курсы</a>
-            {% endif %}
-        </div>
-        <div class="right-btns">
-            {% if not request.user.is_authenticated %}
-                <a href="{% url 'profile' %}" class="btn">Войти</a>
-                <a href="{% url 'register' %}" class="btn">Регистрация</a>
-            {% else %}
-                <button class="btn" onclick="toggleProfile()">{{ user.username }}</button>
-            {% endif %}
-        </div>
-    </header>
-    <div class="profile-dropdown" id="profileDropdown">
-        <div class="profile-header">
-            <button class="close-btn" onclick="closeProfile()">×</button>
-            <img src="https://img.icons8.com/?size=50&id=12438&format=png" alt="Аватар пользователя" class="profile__avatar" />
-            <p><strong>{{ user.username }}</strong></p>
-        </div>
-        <div class="courses-list">
-        <a href="{% url 'profile' %}"><li><img src="https://img.icons8.com/?size=50&id=12438&format=png">Мой профиль</li></a>
-        <a href="{% url 'profile' %}"><li><img src="https://img.icons8.com/?size=50&id=364&format=png"> Настройки</li></a>
-        <a href="{% url 'profile' %}"><li><img src="https://img.icons8.com/?size=50&id=646&format=png"> Помощь</li></a>
-        <a href="{% url 'logout' %}" ><li style="background: #dc3545;"><img src="https://img.icons8.com/?size=50&id=2445&format=png"> Выйти</li></a>
-    </div>
-    </div>
     <div class="container mt-5">
     <div class="card shadow-lg">
         <!-- Обложка курса -->
@@ -291,17 +261,11 @@
                         <div id="collapse{{ forloop.counter }}" class="accordion-collapse collapse" aria-labelledby="heading{{ forloop.counter }}" data-bs-parent="#courseModules">
                             <div class="accordion-body">
                                 <ul class="list-group">
-<<<<<<< HEAD
-                                    {% for section in module.sections %}
-                                        <li class="list-group-item">
-                                            <a href="#" class="topic-link text-decoration-none" data-title="{{ topic.title }}" data-description="{{ topic.description }}">
-                                                {{ section.title }}
-=======
+
                                     {% for sections in module.sections %}
                                         <li class="list-group-item">
                                             <a href="#" class="sections-link text-decoration-none" data-title="{{ sections.title }}" data-description="{{ sections.description }}">
                                                 {{ sections.title }}
->>>>>>> develop1
                                             </a>
                                         </li>
                                     {% endfor %}
@@ -364,4 +328,5 @@
     });
 </script>
 </body>
+{% endblock %}
 </html>

@@ -1,3 +1,5 @@
+{% extends "base.html" %}
+{% block content %}
 {% load static %}
 <html lang="en">
 <head>
@@ -239,55 +241,6 @@
     </style>
 </head>
 <body>
-    <header class="header container-fluid">
-        <div class="left-btns">
-            <h1><a href="{% url 'home'%}"> PyMi</h1>
-            <a href="{% url 'course_list' %}" class="btn">Курсы</a>
-            {% if not request.user.is_authenticated %}
-                
-            {% else %}
-                <a href="{% url 'my_courses' %}" class="btn">Мои курсы</a>
-                {% if teacher %}
-                    <a href="{% url 'create_course' %}" class="btn">Создать курс</a>
-                {% endif %}
-            {% endif %}
-        </div>
-        <div class="right-btns">
-            {% if not request.user.is_authenticated %}
-                <a href="{% url 'login' %}" class="btn">Войти</a>
-                <a href="{% url 'register' %}" class="btn">Регистрация</a>
-            {% else %}
-                <button class="btn" onclick="toggleProfile()">{{ user.username }}</button>
-            {% endif %}
-        </div>
-    </header>
-
-    <div class="profile-dropdown" id="profileDropdown">
-        <div class="profile-header">
-            <button class="close-btn" onclick="closeProfile()">×</button>
-            <img src="https://img.icons8.com/?size=50&id=12438&format=png" alt="Аватар пользователя" class="profile__avatar" />
-            <p><strong>{{ user.username }}</strong></p>
-        </div>
-        <div class="courses-list">
-        <a href="{% url 'profile' %}"><li><img src="https://img.icons8.com/?size=50&id=12438&format=png">Мой профиль</li></a>
-        <a href="{% url 'profile' %}"><li><img src="https://img.icons8.com/?size=50&id=364&format=png"> Настройки</li></a>
-        <a href="{% url 'profile' %}"><li><img src="https://img.icons8.com/?size=50&id=646&format=png"> Помощь</li></a>
-        <a href="{% url 'logout' %}" ><li style="background: #dc3545;"><img src="https://img.icons8.com/?size=50&id=2445&format=png"> Выйти</li></a>
-    </div>
-    </div>
-
-    <script>
-        function toggleProfile() {
-            const profileDropdown = document.getElementById("profileDropdown");
-            profileDropdown.classList.toggle("active");
-        }
-        function closeProfile() {
-    const profileDropdown = document.getElementById("profileDropdown");
-    profileDropdown.classList.remove("active");
-}
-
-    </script>
-
     <div class="info container">
         <h2>Лучшая платформа для обучения!</h2>
         <p>У нас есть все, что вам нужно, чтобы стать экспертом в самых востребованных областях. Присоединяйтесь к нашим курсам и вебинарам!</p>
@@ -318,4 +271,5 @@
     </div>
 
 </body>
+{% endblock %}
 </html>
