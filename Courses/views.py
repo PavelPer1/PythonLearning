@@ -20,6 +20,31 @@ from contextlib import redirect_stdout
 from Courses.models import Courses, StudentCourser, CompletedTask
 from Profile.models import Student, Teacher
 from django.http import JsonResponse
+import openai
+from io import StringIO
+from contextlib import redirect_stdout
+
+openai.api_key = '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'
+
+
+def check_code_with_openai(code, task_description):
+    """Проверяем код с помощью OpenAI для оценки его корректности."""
+    try:
+        # Отправляем запрос в OpenAI для анализа кода
+        prompt = f"Задача: {task_description}\n\nКод: {code}\n\nПроверь, соответствует ли этот код решению задачи. Если код решает задачу, верни 'correct', если нет, верни 'incorrect'."
+        response = openai.Completion.create(
+            engine="text-davinci-003",  # Используйте подходящий движок
+            prompt=prompt,
+            max_tokens=100,
+            temperature=0.0  # Устанавливаем низкую температуру для точных ответов
+        )
+
+        result = response.choices[0].text.strip().lower()
+        if result == 'correct':
+            return True
+        return False
+    except Exception as e:
+        return False, str(e)
 
 @csrf_exempt
 @login_required
@@ -146,8 +171,16 @@ def course_detail(request, course_id):
 
 
 
-def execute_code_safely(code):
+def execute_code_safely(code, task_description):
+    """Проверяем код через OpenAI и затем выполняем на сервере."""
     try:
+        # Сначала проверяем код с помощью OpenAI
+        is_valid = check_code_with_openai(code, task_description)
+
+        if not is_valid:
+            return "Ошибка: Код не соответствует решению задачи."
+
+        # Если код прошел проверку, выполняем его на сервере
         local_globals = {
             '__builtins__': {
                 'print': print,
@@ -182,10 +215,10 @@ def execute_code_safely(code):
         return output if output else "Program executed without output."
 
     except SyntaxError as e:
-        return f"SyntaxError: {e.msg}"  # Оставляем только краткое сообщение
+        return f"SyntaxError: {e.msg}"
     except Exception as e:
-        return f"{type(e).__name__}: {e}"  # Остальные ошибки тоже без трассировки
-
+        return f"{type(e).__name__}: {e}"
+    
 def course_with_compiler(request, crs):
     course = get_object_or_404(Courses, name=crs)
     output = None
@@ -193,7 +226,7 @@ def course_with_compiler(request, crs):
     tasks = course.data
 
     task_completed = False
-
+    task_description = ""
     teach = False
 
     if request.user.is_authenticated:
@@ -206,7 +239,14 @@ def course_with_compiler(request, crs):
         if len(code) > 1000:
             return HttpResponse("Code is too long", status=400)
 
-        output = execute_code_safely(code)
+        for module in tasks['modules']:
+            for section in module['sections']:
+                for task in section['tasks']:
+                    if task['title'] == task_id:
+                        task_description = task.get('description', '')
+
+        # Выполняем код с проверкой через OpenAI
+        output = execute_code_safely(code, task_description)
 
         # Получаем правильный ответ для текущей задачи
         correct_answer = None

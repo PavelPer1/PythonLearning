@@ -426,31 +426,6 @@
     {% endfor %}
 </div>
 
-{% if not teacher %}
-    <div class="recommended">
-        <h3>Рекомендуемые курсы</h3>
-        <div class="recommended-course-container">
-            {% for course in courses|slice:":3" %}
-            <a href="{% url 'course_detail' course.id %}" class="course-link">
-                <div class="recommended-course">
-                    {% if course.image %}
-                        <img src="{{ course.image.url }}" alt="{{ course.name }}" class="course-cover">
-                    {% else %}
-                        <div class="no-cover">Нет обложки</div>
-                    {% endif %}
-                    <h4>{{ course.name }}</h4>
-                    <p><strong>Автор:</strong> {{ course.author }}</p>
-                </div>
-            </a>
-            {% empty %}
-                <p>Нет рекомендаций</p>
-            {% endfor %}
-        </div>
-    </div>
-{% else %}
-    <!-- Место для кода для учителей, если нужно -->
-{% endif %}
-
 
 </main>
 
