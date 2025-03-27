@@ -17,6 +17,7 @@
     <link rel="stylesheet" href="{% static 'get_courses.css' %}">
 </head>
 <body>
+
     <div class="container-fluid">
     <div class="row">
         <!-- Левая часть - Sidebar -->
@@ -104,98 +105,111 @@
 </div>
 
 
+
+<!-- Стили для отключения стандартного стиля ссылок -->
+<style>
+    .task-link {
+        text-decoration: none;
+        color: inherit;
+        cursor: pointer;
+        padding: 8px;
+    }
+    .task-link:hover {
+        background-color: #f8f9fa;
+        border-radius: 5px;
+    }
+</style>
+
+
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        let completedTasks = {};
-        let currentTaskId = null;
-        const courseId = "{{ courses.id }}";
+    let completedTasks = {};
+    let currentTaskId = null;
+    const courseId = "{{ courses.id }}";
 
-        const taskTitleElement = document.getElementById('taskTitle');
-        const taskDescriptionElement = document.getElementById('taskDescription');
-        const statusMessage = document.getElementById('statusMessage');
-        const taskOutputElement = document.getElementById('taskOutput');
-        const form = document.querySelector('form'); // Получаем форму
+    const taskTitleElement = document.getElementById('taskTitle');
+    const taskDescriptionElement = document.getElementById('taskDescription');
+    const statusMessage = document.getElementById('statusMessage');
+    const taskOutputElement = document.getElementById('taskOutput');
+    
 
-        // Получение прогресса выполненных заданий
-        fetch(`/get-progress/${courseId}`)
-            .then(response => response.json())
-            .then(data => {
-                completedTasks = data.completed_tasks.reduce((acc, task) => {
-                    acc[task] = true;
-                    return acc;
-                }, {});
-            })
-            .catch(error => console.error("Ошибка загрузки прогресса:", error));
+    // Получение прогресса выполненных заданий
+    fetch(`/get-progress/${courseId}`)
+        .then(response => response.json())
+        .then(data => {
+            completedTasks = data.completed_tasks.reduce((acc, task) => {
+                acc[task] = true;
+                return acc;
+            }, {});
+        })
+        .catch(error => console.error("Ошибка загрузки прогресса:", error));
 
-        // Обработчик кликов по заданиям
-        document.addEventListener('click', function (event) {
-            const link = event.target.closest('.task-link');
-            if (!link) return; // Если клик не по ссылке задания, выходим
-            event.preventDefault();
+    // Обработчик кликов по заданиям
+    document.addEventListener('click', function (event) {
+        const link = event.target.closest('.task-link');
+        if (!link) return;
+        event.preventDefault();
 
-            // Получаем данные задания
-            const taskTitle = link.getAttribute('data-title');
-            const taskDescription = link.getAttribute('data-description');
+        // Получаем данные задания
+        const taskTitle = link.getAttribute('data-title');
+        const taskDescription = link.getAttribute('data-description');
 
-            // Обновляем элементы в правой части экрана
-            taskTitleElement.textContent = taskTitle;
-            taskDescriptionElement.textContent = taskDescription || 'Описание не предоставлено';
-            currentTaskId = taskTitle; // Устанавливаем текущий ID задания
-            updateTaskStatus(); // Обновляем статус задания
-        });
-
-        // Функция обновления статуса задания
-        function updateTaskStatus() {
-            if (completedTasks[currentTaskId]) {
-                statusMessage.textContent = 'Задание выполнено!';
-                statusMessage.classList.add('alert-success');
-                statusMessage.classList.remove('alert-warning');
-            } else {
-                statusMessage.textContent = 'Задание не выполнено.';
-                statusMessage.classList.add('alert-warning');
-                statusMessage.classList.remove('alert-success');
-            }
-        }
-
-        // Проверка ответа после выполнения кода
-        form.addEventListener('submit', function (event) {
-            event.preventDefault(); // Предотвращаем стандартное поведение формы
-
-            if (currentTaskId && completedTasks[currentTaskId]) {
-                alert("Это задание уже выполнено!");
-                return;
-            }
-
-            // Получаем код из редактора
-            const code = editor.getValue();
-
-            // Отправляем данные на сервер
-            fetch('/save-progress/', {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "X-CSRFToken": "{{ csrf_token }}",
-                },
-                body: JSON.stringify({
-                    task_id: currentTaskId,
-                    course_id: courseId,
-                    code: code // Отправляем код на сервер
-                })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.message) {
-                    completedTasks[currentTaskId] = true; // Обновляем статус задания
-                    updateTaskStatus();
-                }
-                // Обновляем вывод
-                taskOutputElement.textContent = data.output || 'Нет вывода'; // Предполагаем, что сервер возвращает вывод
-            })
-            .catch(error => console.error("Ошибка сохранения прогресса:", error));
-        });
+        // Обновляем элементы в правой части экрана
+        taskTitleElement.textContent = taskTitle;
+        taskDescriptionElement.textContent = taskDescription || 'Описание не предоставлено';
+        currentTaskId = taskTitle;
+        updateTaskStatus();
     });
 
-    // Инициализация CodeMirror
+    // Функция обновления статуса задания
+    function updateTaskStatus() {
+        if (completedTasks[currentTaskId]) {
+            statusMessage.textContent = 'Задание выполнено!';
+            statusMessage.classList.add('alert-success');
+            statusMessage.classList.remove('alert-warning');
+        } else {
+            statusMessage.textContent = 'Задание не выполнено.';
+            statusMessage.classList.add('alert-warning');
+            statusMessage.classList.remove('alert-success');
+        }
+    }
+
+    // Проверка ответа после выполнения кода
+    form.addEventListener('submit', function (event) {
+        event.preventDefault();
+        const codeOutput = taskOutputElement.textContent.trim();
+        
+        if (currentTaskId && completedTasks[currentTaskId]) {
+            alert("Это задание уже выполнено!");
+            return;
+        }
+
+        fetch('/save-progress/', {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": "{{ csrf_token }}",
+            },
+            body: JSON.stringify({
+                task_id: currentTaskId,
+                course_id: courseId
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.message) {
+                completedTasks[currentTaskId] = true;
+                updateTaskStatus();
+            }
+        })
+        .catch(error => console.error("Ошибка сохранения прогресса:", error));
+    });
+});
+
+</script>
+
+
+<script>
     var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
         lineNumbers: true,
         mode: "python",
@@ -203,6 +217,17 @@
         theme: "default",
         extraKeys: { Tab: "indentMore", "Shift-Tab": "indentLess" }
     });
+</script>
+<script>
+    function toggleProfile() {
+        const profileDropdown = document.getElementById("profileDropdown");
+        profileDropdown.classList.toggle("active");
+    }
+    function closeProfile() {
+        const profileDropdown = document.getElementById("profileDropdown");
+        profileDropdown.classList.remove("active");
+
+    }
 
 </script>
 </body>
