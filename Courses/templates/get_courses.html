@@ -161,7 +161,7 @@
             indentUnit: 4,
             theme: "default"
         });
-    
+
         // Функция для безопасной загрузки данных
         function getContentData(link) {
             try {
@@ -177,7 +177,7 @@
                 return null;
             }
         }
-    
+
         // Улучшенный парсер JSON
         function tryParseJSON(jsonString) {
             if (!jsonString || jsonString === '[]') return [];
@@ -189,27 +189,27 @@
                 return [];
             }
         }
-    
+
         // Обработчик кликов по элементам контента
         document.addEventListener('click', function (e) {
             const link = e.target.closest('.content-link');
             if (!link) return;
             e.preventDefault();
-    
+
             const contentData = getContentData(link);
             if (!contentData) return;
-    
+
             showContent(contentData);
             setActiveLink(link);
         });
-    
+
         // Функция отображения контента
         function showContent(data) {
             // Скрываем все контейнеры
             document.querySelectorAll('#contentContainer > div').forEach(el => {
                 el.style.display = 'none';
             });
-    
+
             // Показываем соответствующий контент
             switch(data.type) {
                 case 'theory':
@@ -223,14 +223,14 @@
                     break;
             }
         }
-    
+
         // Функции отображения конкретных типов контента
         function showTheory(data) {
             document.getElementById('theoryTitle').textContent = data.title;
             document.getElementById('theoryText').innerHTML = data.content;
             document.getElementById('theoryContent').style.display = 'block';
         }
-    
+
         function showPractice(data) {
             document.getElementById('practiceTitle').textContent = data.title;
             document.getElementById('practiceDescription').innerHTML = data.content;
@@ -238,18 +238,18 @@
             document.getElementById('taskId').value = data.title;
             document.getElementById('practiceContent').style.display = 'block';
         }
-    
+
         function showTest(data) {
             document.getElementById('testTitle').textContent = data.title;
             renderQuestions(data.questions);
             document.getElementById('testContent').style.display = 'block';
         }
-    
+
         // Функция рендеринга вопросов теста
         function renderQuestions(questions) {
             const container = document.getElementById('testQuestions');
             container.innerHTML = '';
-    
+
             questions.forEach((q, i) => {
                 const questionDiv = document.createElement('div');
                 questionDiv.className = 'mb-3 p-3 bg-light rounded';
@@ -266,7 +266,7 @@
                 container.appendChild(questionDiv);
             });
         }
-    
+
         // Инициализация первого контента
         function initFirstContent() {
             const firstLink = document.querySelector('.content-link');
@@ -276,68 +276,45 @@
                 document.getElementById('welcomeMessage').style.display = 'block';
             }
         }
-    
+
         // Запуск инициализации
         initFirstContent();
+
+        // Обработчик формы отправки кода
         document.getElementById("codeForm").addEventListener("submit", function(e) {
-    e.preventDefault();
+            e.preventDefault();
 
-    const code = editor.getValue();
-    const taskId = document.getElementById("taskId").value;
-    const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+            const code = editor.getValue();
+            const taskId = document.getElementById("taskId").value;
+            const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
 
-    fetch("{% url 'course_with_compiler' courses.name %}", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/x-www-form-urlencoded",
-            "X-CSRFToken": csrfToken
-        },
-        body: new URLSearchParams({
-            "codearea": code,
-            "task_id": taskId
-        })
-    })
-    .then(response => response.text())
-    .then(html => {
-        // Извлекаем только обновлённый блок output из возвращённой HTML-страницы
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(html, 'text/html');
-        const newOutput = doc.querySelector('#taskOutput');
-        if (newOutput) {
-            document.getElementById('output').innerHTML = '';
-            document.getElementById('output').appendChild(newOutput);
-        }
-    })
-    .catch(error => {
-        console.error("Ошибка при выполнении кода:", error);
-        document.getElementById('output').innerHTML = "<pre class='bg-danger text-white p-3'>Ошибка на сервере</pre>";
-    });
-});
-
-    });
-
-    document.addEventListener('DOMContentLoaded', function () {
-        // Функция рендеринга вопросов теста
-        function renderQuestions(questions) {
-            const container = document.getElementById('testQuestions');
-            container.innerHTML = '';
-
-            questions.forEach((q, i) => {
-                const questionDiv = document.createElement('div');
-                questionDiv.className = 'mb-3 p-3 bg-light rounded';
-                questionDiv.innerHTML = `
-                    <h5>${i+1}. ${q.question || 'Без текста'}</h5>
-                    ${(q.options || []).map((opt, j) => `
-                        <div class="form-check">
-                            <input type="radio" name="q${i}" id="q${i}_${j}" value="${j}" 
-                                   class="form-check-input" ${j === q.correct ? 'data-correct="true"' : ''}>
-                            <label for="q${i}_${j}" class="form-check-label">${opt || 'Вариант без текста'}</label>
-                        </div>
-                    `).join('')}
-                `;
-                container.appendChild(questionDiv);
+            fetch("{% url 'course_with_compiler' courses.name %}", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded",
+                    "X-CSRFToken": csrfToken
+                },
+                body: new URLSearchParams({
+                    "codearea": code,
+                    "task_id": taskId
+                })
+            })
+            .then(response => response.text())
+            .then(html => {
+                // Извлекаем только обновлённый блок output из возвращённой HTML-страницы
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+                const newOutput = doc.querySelector('#taskOutput');
+                if (newOutput) {
+                    document.getElementById('output').innerHTML = '';
+                    document.getElementById('output').appendChild(newOutput);
+                }
+            })
+            .catch(error => {
+                console.error("Ошибка при выполнении кода:", error);
+                document.getElementById('output').innerHTML = "<pre class='bg-danger text-white p-3'>Ошибка на сервере</pre>";
             });
-        }
+        });
 
         // Функция для обработки результатов теста
         document.getElementById('submitTest').addEventListener('click', function() {
@@ -356,40 +333,119 @@
             resultAlert.textContent = resultMessage;
             resultAlert.style.display = 'block';
         });
+    });
+    // Тестовые данные
+    const testData = {
+        "title": "Проверка знаний по Python",
+        "questions": [
+            {
+                "question": "Какой оператор используется для создания функции?",
+                "options": ["def", "function", "create", "func"],
+                "correct": 0
+            },
+            {
+                "question": "Как обозначается блок кода в Python?",
+                "options": ["отступами", "фигурными скобками", "квадратными скобками", "тегами"],
+                "correct": 0
+            },
+            {
+                "question": "Что возвращает функция, если в ней нет return?",
+                "options": ["None", "False", "0", "Null"],
+                "correct": 0
+            }
+        ]
+    };
 
-        // Функция отображения теста
-        function showTest(data) {
-            document.getElementById('testTitle').textContent = data.title;
-            renderQuestions(data.questions);
-            document.getElementById('testContent').style.display = 'block';
+    // Функция для отображения теста
+    function showTest(data) {
+        document.getElementById('testTitle').textContent = data.title || "Тест";
+        renderQuestions(data.questions || []);
+        document.getElementById('testContent').style.display = 'block';
+        document.getElementById('testResult').style.display = 'none';
+    }
+
+    // Функция рендеринга вопросов теста
+    function renderQuestions(questions) {
+        const container = document.getElementById('testQuestions');
+        container.innerHTML = '';
+
+        if (!questions || questions.length === 0) {
+            container.innerHTML = '<p>Нет доступных вопросов для этого теста</p>';
+            return;
         }
 
-        // Пример данных для теста (замените на реальные данные из вашего JSON)
-        const testData = {
-            "title": "Проверка знаний по Python",
-            "questions": [
-                {
-                    "question": "Какой оператор используется для создания функции?",
-                    "options": ["def", "function", "create", "func"],
-                    "correct": 0
-                },
-                {
-                    "question": "Как обозначается блок кода в Python?",
-                    "options": ["отступами", "фигурными скобками", "квадратными скобками", "тегами"],
-                    "correct": 0
-                },
-                {
-                    "question": "Что возвращает функция, если в ней нет return?",
-                    "options": ["None", "False", "0", "Null"],
-                    "correct": 0
-                }
-            ]
-        };
+        questions.forEach((q, i) => {
+            const questionDiv = document.createElement('div');
+            questionDiv.className = 'mb-3 p-3 bg-white rounded border';
+            questionDiv.innerHTML = `
+                <h5>${i+1}. ${q.question || 'Вопрос без текста'}</h5>
+                ${(q.options || []).map((opt, j) => `
+                    <div class="form-check">
+                        <input type="radio" name="q${i}" id="q${i}_${j}" value="${j}" 
+                               class="form-check-input" ${j === q.correct ? 'data-correct="true"' : ''}>
+                        <label for="q${i}_${j}" class="form-check-label">${opt || 'Вариант без текста'}</label>
+                    </div>
+                `).join('')}
+            `;
+            container.appendChild(questionDiv);
+        });
+    }
 
-        // Запускаем отображение теста
-        showTest(testData);
+    // Функция для обработки результатов теста
+    document.getElementById('submitTest').addEventListener('click', function() {
+        const questions = testData.questions || [];
+        let correctAnswers = 0;
+        const totalQuestions = questions.length;
+        
+        // Проверяем каждый вопрос
+        for (let i = 0; i < totalQuestions; i++) {
+            const selectedOption = document.querySelector(`input[name="q${i}"]:checked`);
+            if (selectedOption && selectedOption.dataset.correct) {
+                correctAnswers++;
+            }
+        }
+
+        // Показываем результат
+        const resultAlert = document.getElementById('testResult');
+        resultAlert.innerHTML = `
+            <h5>Результаты теста</h5>
+            <p>Вы ответили правильно на ${correctAnswers} из ${totalQuestions} вопросов.</p>
+            <p>Процент правильных ответов: ${Math.round((correctAnswers / totalQuestions) * 100)}%</p>
+        `;
+        
+        // Меняем цвет алерта в зависимости от результата
+        const percentage = (correctAnswers / totalQuestions) * 100;
+        if (percentage >= 80) {
+            resultAlert.className = 'mt-3 alert alert-success';
+        } else if (percentage >= 50) {
+            resultAlert.className = 'mt-3 alert alert-warning';
+        } else {
+            resultAlert.className = 'mt-3 alert alert-danger';
+        }
+        
+        resultAlert.style.display = 'block';
     });
-    </script>
+
+    // В обработчике кликов по элементам контента, для тестов используем наши данные
+    document.addEventListener('click', function (e) {
+        const link = e.target.closest('.content-link');
+        if (!link) return;
+        e.preventDefault();
+
+        const contentData = getContentData(link);
+        if (!contentData) return;
+
+        if (contentData.type === 'test') {
+            // Для тестов используем наши данные вместо данных из атрибутов
+            showTest(testData);
+        } else {
+            showContent(contentData);
+        }
+        
+        setActiveLink(link);
+    });
+</script>
+
     
 </body>
 {% endblock %}
