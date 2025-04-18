@@ -21,40 +21,6 @@ from Courses.models import Courses, StudentCourser, CompletedTask
 from Profile.models import Student, Teacher
 from django.http import JsonResponse
 
-@csrf_exempt
-@login_required
-def save_progress(request):
-    """Сохраняем выполненное задание."""
-    if request.method == "POST":
-        try:
-            data = json.loads(request.body)
-            task_id = data.get("task_id")
-            course_id = data.get("course_id")
-
-            student, created = Student.objects.get_or_create(name_id=request.user.id)
-            course = Courses.objects.filter(id=course_id).first()
-
-            if not course:
-                return JsonResponse({"error": "Курс не найден"}, status=400)
-
-            if task_id:
-                CompletedTask.objects.get_or_create(student=student, course=course, task_id=task_id)
-                return JsonResponse({"message": "Прогресс сохранён!"}, status=200)
-
-            return JsonResponse({"error": "Неверные данные"}, status=400)
-        except Exception as e:
-            return JsonResponse({"error": str(e)}, status=500)
-
-@login_required
-def get_progress(request, course_id):
-    """Получаем список выполненных заданий для курса."""
-    student = Student.objects.filter(name_id=request.user.id).first()
-    
-    if not student:
-        return JsonResponse({"completed_tasks": []}, status=200)
-
-    completed_tasks = CompletedTask.objects.filter(student=student, course_id=course_id).values_list("task_id", flat=True)
-    return JsonResponse({"completed_tasks": list(completed_tasks)}, status=200)
 
 def my_courses_view(request):
     my_crs = []
@@ -186,6 +152,8 @@ def execute_code_safely(code):
     except Exception as e:
         return f"{type(e).__name__}: {e}"  # Остальные ошибки тоже без трассировки
 
+# ... (остальные импорты остаются без изменений)
+
 def course_with_compiler(request, crs):
     course = get_object_or_404(Courses, name=crs)
     output = None
@@ -193,7 +161,6 @@ def course_with_compiler(request, crs):
     tasks = course.data
 
     task_completed = False
-
     teach = False
 
     if request.user.is_authenticated:
@@ -208,113 +175,33 @@ def course_with_compiler(request, crs):
 
         output = execute_code_safely(code)
 
-        # Получаем правильный ответ для текущей задачи
+        # Проверяем правильность выполнения задания
         correct_answer = None
         for module in tasks['modules']:
-            for section in module['sections']:  # Изменено на 'sections'
-                for task in section['tasks']:  # Изменено на 'tasks'
-                    if task['title'] == task_id:  # Предполагаем, что task_id соответствует заголовку задания
-                        correct_answer = task.get('answer')
+            for section in module['sections']:
+                for content in section['contents']:
+                    if content['type'] == 'practice' and content['title'] == task_id:
+                        correct_answer = content.get('answer')
                         break
 
-        # Проверяем, совпадает ли вывод с правильным ответом
-        if correct_answer is not None:
-            if output.strip() == correct_answer.strip():
-                task_completed = True
-        else:
-            print(f"Правильный ответ не найден для task_id: {task_id}")
+        if correct_answer is not None and output.strip() == correct_answer.strip():
+            task_completed = True
+            # Сохраняем прогресс
+            student = Student.objects.filter(name_id=request.user.id).first()
+            if student:
+                CompletedTask.objects.get_or_create(student=student, course=course, task_id=task_id)
+    tasks_json_str = json.dumps(tasks, ensure_ascii=False)
 
     context = {
         'courses': course,
         'output': output,
         'code': code,
-        'tasks_json': tasks,  # Преобразуем в JSON-строку
+        'tasks_json': tasks,
         'task_completed': task_completed,
-        'teacher': teach
+        'teacher': teach,
+        'tasks_json': tasks,             # если ты где-то используешь как объект
+        'tasks_json_str': tasks_json_str  # для <script>
     }
 
     return render(request, 'get_courses.html', context)
 
-
-def render_create_course(request):
-    if request.method == 'POST':
-        # Соберите данные из формы
-        course_data = {
-            "title": request.POST.get('course_title'),
-            "description": request.POST.get('course_description'),
-            "modules": []
-        }
-
-        module_count = 1
-        while True:
-            module_title = request.POST.get(f'module_title_{module_count}')
-            if not module_title:
-                break  # Прекратите, если модуль не найден
-
-            module_description = request.POST.get(f'module_description_{module_count}')
-            module = {
-                "title": module_title,
-                "description": request.POST.get('course_description'),
-                "sections": []  # Изменено на "sections"
-            }
-
-            section_count = 1
-            while True:
-                section_title = request.POST.get(f'section_title_{module_count}_{section_count}')
-                if not section_title:
-                    break  # Прекратите, если раздел не найден
-
-                section_description = request.POST.get(f'section_description_{module_count}_{section_count}')
-                section = {
-                    "title": section_title,
-                    "description": section_description,
-                    "tasks": []  # Изменено на "tasks"
-                }
-
-                task_count = 1
-                while True:
-                    task_title = request.POST.get(f'task_title_{module_count}_{section_count}_{task_count}')
-                    if not task_title:
-                        break  # Прекратите, если задание не найдено
-
-                    task_description = request.POST.get(f'task_description_{module_count}_{section_count}_{task_count}')
-                    task_answer = request.POST.get(f'task_answer_{module_count}_{section_count}_{task_count}')
-
-                    task = {
-                        "title": task_title,
-                        "description": task_description,
-                        "answer": task_answer  # Добавлено поле для ответа
-                    }
-
-                    section["tasks"].append(task)  # Добавляем задание в раздел
-                    task_count += 1
-
-                module["sections"].append(section)  # Добавляем раздел в модуль
-                section_count += 1
-
-            course_data["modules"].append(module)  # Добавляем модуль в курс
-            module_count += 1
-
-        # Сохраните данные в JSON файл
-        with open('course_data.json', 'w', encoding='utf-8') as json_file:
-            json.dump(course_data, json_file, ensure_ascii=False, indent=4)
-
-        # Получите учителя по имени пользователя
-        teacher = Teacher.objects.filter(name=request.user).first()
-        if teacher is None:
-            return JsonResponse({"error": "Учитель не найден."}, status=404)
-
-        # Создайте курс
-        course = Courses(
-            teacher=teacher,
-            name=course_data["title"],
-            progress="0%",  # Укажите начальный прогресс
-            author=teacher,  # Укажите имя автора
-            language=course_data["title"],  # Укажите язык курса
-            data=course_data  # Сохраните данные курса в формате JSON
-        )
-        course.save()
-
-        return redirect('course_list')
-
-    return render(request, 'create_courses.html')
