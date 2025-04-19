@@ -1,11 +1,10 @@
 {% extends "base.html" %}
 
-
 {% block content %}
 <div class="container mt-5">
     <div class="row justify-content-center">
         <div class="col-md-8">
-            <!-- Card with header and body -->
+            <!-- Карточка с заголовком и телом -->
             <div class="card shadow-sm">
                 <div class="card-header bg-primary text-white">
                     <h4 class="mb-0">Помощь и поддержка</h4>
@@ -13,9 +12,9 @@
                 <div class="card-body">
                     <p class="lead">Здесь собраны ответы на часто задаваемые вопросы.</p>
 
-                    <!-- Accordion for FAQ -->
+                    <!-- Аккордеон для FAQ -->
                     <div class="accordion" id="faqAccordion">
-                        <!-- FAQ 1: How to change login -->
+                        <!-- Вопрос 1 -->
                         <div class="accordion-item">
                             <h2 class="accordion-header" id="headingOne">
                                 <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
@@ -29,7 +28,7 @@
                             </div>
                         </div>
 
-                        <!-- FAQ 2: How to change password -->
+                        <!-- Вопрос 2 -->
                         <div class="accordion-item">
                             <h2 class="accordion-header" id="headingTwo">
                                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
@@ -43,7 +42,7 @@
                             </div>
                         </div>
 
-                        <!-- FAQ 3: How to log out -->
+                        <!-- Вопрос 3 -->
                         <div class="accordion-item">
                             <h2 class="accordion-header" id="headingThree">
                                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
@@ -58,7 +57,7 @@
                         </div>
                     </div>
 
-                    <!-- Return to home button -->
+                    <!-- Кнопка возврата -->
                     <div class="mt-4 text-center">
                         <a href="{% url 'home' %}" class="btn btn-secondary btn-lg">Вернуться на главную</a>
                     </div>

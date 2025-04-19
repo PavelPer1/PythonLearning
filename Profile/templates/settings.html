@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Settings</title>
+    <title>Настройки пользователя</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
@@ -11,18 +11,18 @@
 
 {% block content %}
 <div class="container mt-5">
-    <h1>Settings</h1>
-    <p>Here you can change your username and password.</p>
+    <h1>Настройки</h1>
+    <p>Здесь вы можете изменить имя пользователя и пароль.</p>
 
     <div class="card mb-3">
         <div class="card-header">
-            Change Username
+            Сменить имя пользователя
         </div>
         <div class="card-body">
             <form method="POST">
                 {% csrf_token %}
-                {{ username_form.as_p }}  <!-- This will render the form fields for the username -->
-                <button type="submit" name="change_username" class="btn btn-primary">Change Username</button>
+                {{ username_form.as_p }}  <!-- Отображение полей формы для смены имени пользователя -->
+                <button type="submit" name="change_username" class="btn btn-primary">Изменить имя пользователя</button>
             </form>
             {% if messages %}
                 <div class="mt-2">
@@ -36,13 +36,13 @@
 
     <div class="card">
         <div class="card-header">
-            Change Password
+            Сменить пароль
         </div>
         <div class="card-body">
             <form method="POST">
                 {% csrf_token %}
-                {{ password_form.as_p }}  <!-- This will render the form fields for password change -->
-                <button type="submit" name="change_password" class="btn btn-primary">Change Password</button>
+                {{ password_form.as_p }}  <!-- Отображение полей формы для смены пароля -->
+                <button type="submit" name="change_password" class="btn btn-primary">Изменить пароль</button>
             </form>
             {% if messages %}
                 <div class="mt-2">
@@ -54,7 +54,7 @@
         </div>
     </div>
 
-    <a href="{% url 'profile' %}" class="btn btn-secondary mt-3">Back to Profile</a>
+    <a href="{% url 'profile' %}" class="btn btn-secondary mt-3">Вернуться в профиль</a>
 
 </div>
 
