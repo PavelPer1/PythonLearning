@@ -234,7 +234,7 @@
         function showPractice(data) {
             document.getElementById('practiceTitle').textContent = data.title;
             document.getElementById('practiceDescription').innerHTML = data.content;
-            editor.setValue(data.code);
+            editor.setValue('');
             document.getElementById('taskId').value = data.title;
             document.getElementById('practiceContent').style.display = 'block';
         }
