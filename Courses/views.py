@@ -159,12 +159,19 @@ def course_with_compiler(request, crs):
     output = None
     code = ""
     tasks = course.data
-
+    completed_tasks = set()
     task_completed = False
     teach = False
+    task_id = request.POST.get('task_id', '')  # Получаем task_id даже для GET запросов
 
     if request.user.is_authenticated:
         teach = Teacher.objects.filter(name=request.user).exists()
+        student = Student.objects.filter(name_id=request.user.id).first()
+        if student:
+            completed_tasks = set(CompletedTask.objects.filter(
+                student=student,
+                course=course
+            ).values_list('task_id', flat=True))
 
     if request.method == "POST":
         code = request.POST.get('codearea', '')
@@ -175,7 +182,6 @@ def course_with_compiler(request, crs):
 
         output = execute_code_safely(code)
 
-        # Проверяем правильность выполнения задания
         correct_answer = None
         for module in tasks['modules']:
             for section in module['sections']:
@@ -186,10 +192,10 @@ def course_with_compiler(request, crs):
 
         if correct_answer is not None and output.strip() == correct_answer.strip():
             task_completed = True
-            # Сохраняем прогресс
-            student = Student.objects.filter(name_id=request.user.id).first()
             if student:
                 CompletedTask.objects.get_or_create(student=student, course=course, task_id=task_id)
+                completed_tasks.add(task_id)
+
     tasks_json_str = json.dumps(tasks, ensure_ascii=False)
 
     context = {
@@ -197,11 +203,11 @@ def course_with_compiler(request, crs):
         'output': output,
         'code': code,
         'tasks_json': tasks,
+        'task_id': task_id,  # Всегда передаем task_id в контекст
         'task_completed': task_completed,
         'teacher': teach,
-        'tasks_json': tasks,             # если ты где-то используешь как объект
-        'tasks_json_str': tasks_json_str  # для <script>
+        'completed_tasks': list(completed_tasks),
+        'tasks_json_str': tasks_json_str
     }
 
     return render(request, 'get_courses.html', context)
-

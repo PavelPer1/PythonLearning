@@ -28,13 +28,18 @@ class StudentCourser(models.Model):
     class Meta:
         unique_together = ('courses', 'student')
 
+
 class CompletedTask(models.Model):
-    student = models.ForeignKey(Student, on_delete=models.CASCADE)  # Привязываем к студенту
-    course = models.ForeignKey(Courses, on_delete=models.CASCADE)  # Привязываем к курсу
-    task_id = models.CharField(max_length=255)  # ID выполненного задания
+    student = models.ForeignKey(Student, on_delete=models.CASCADE, null=True)
+    course = models.ForeignKey(Courses, on_delete=models.CASCADE, null=True)
+    task_id = models.CharField(max_length=255, null=True)
+    code_solution = models.TextField(blank=True, null=True)
+    completed_at = models.DateTimeField(auto_now_add=True, null=True)
 
     class Meta:
-        unique_together = ('student', 'course', 'task_id')  # Запрещаем дублирование записей
+        unique_together = ('student', 'course', 'task_id')
+        verbose_name = 'Выполненное задание'
+        verbose_name_plural = 'Выполненные задания'
 
     def __str__(self):
         return f"{self.student} - {self.course} - {self.task_id}"
